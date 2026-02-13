@@ -1,6 +1,6 @@
 # TITLE: Group Project Web App
 
-Built by [2975645S](https://github.com/2975645S), ... for [Web Application Development 2](https://www.gla.ac.uk/coursecatalogue/course/?code=COMPSCI2021).
+Built by [2975645S](https://github.com/2975645S), [2961649C](https://github.com/crawfordclarke), ... for [Web Application Development 2](https://www.gla.ac.uk/coursecatalogue/course/?code=COMPSCI2021).
 
 ## Running the code
 

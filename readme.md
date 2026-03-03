@@ -4,6 +4,19 @@ Built by [2975645S](https://github.com/2975645S), [2961649C](https://github.com/
 
 ## Running the code
 
+### Preparation
+
+The only thing you need to do in preparation of running the code is populating your `.env` file.
+To make this easier, a template file is provided in [`.env.example`](.env.example).
+If you don't want to do this yourself, you can run the provided [`env.py`](env.py) script and it
+will automatically be populated for you.
+
+```bash
+python env.py
+```
+
+### Execution
+
 If you have [uv](https://github.com/astral-sh/uv) installed, all you need to run is:
 
 ```bash

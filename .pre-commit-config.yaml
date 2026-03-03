@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: generate-requirements
+        name: Generate requirements.txt
+        entry: python scripts/requirements.py
+        language: unsupported
+        pass_filenames: false
+        stages: [ pre-commit ]

@@ -2,17 +2,25 @@
 
 Built by [2975645S](https://github.com/2975645S), [2961649C](https://github.com/crawfordclarke), [2839497C](https://github.com/2839497C), and [2972355H](#) for [Web Application Development 2](https://www.gla.ac.uk/coursecatalogue/course/?code=COMPSCI2021).
 
+## Development
+
+Make sure you install the pre-commit hooks by running:
+
+```bash
+uv run pre-commit install
+```
+
 ## Running the code
 
 ### Preparation
 
 The only thing you need to do in preparation of running the code is populating your `.env` file.
 To make this easier, a template file is provided in [`.env.example`](.env.example).
-If you don't want to do this yourself, you can run the provided [`env.py`](env.py) script and it
+If you don't want to do this yourself, you can run the provided [`env.py`](scripts/env.py) script and it
 will automatically be populated for you.
 
 ```bash
-python env.py
+python scripts/env.py
 ```
 
 ### Execution

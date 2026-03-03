@@ -13,5 +13,5 @@ contents = f'''SECRET_KEY="{secret_key}"
 DOMAIN="{DOMAIN}"
 '''
 
-with open("../.env", "w") as f:
+with open(".env", "w") as f:
     f.write(contents)

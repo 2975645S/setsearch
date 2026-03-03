@@ -14,18 +14,20 @@ uv run pre-commit install
 
 ### Preparation
 
-The only thing you need to do in preparation of running the code is populating your `.env` file.
-To make this easier, a template file is provided in [`.env.example`](.env.example).
-If you don't want to do this yourself, you can run the provided [`env.py`](scripts/env.py) script and it
-will automatically be populated for you.
+One thing you need to do to prepare is populate your `.env` file. To make this easier, a template file is
+provided in [`.env.example`](.env.example). If you don't want to do this yourself, you can run the provided [
+`env.py`](scripts/env.py)
+script and it will automatically be populated for you. You must also migrate the database. You can do these two things
+with the following commands:
 
 ```bash
 python scripts/env.py
+python manage.py migrate
 ```
 
 ### Execution
 
-If you have [uv](https://github.com/astral-sh/uv) installed, all you need to run is:
+If you have [uv](https://github.com/astral-sh/uv) installed, migrate the database and run the server:
 
 ```bash
 uv run manage.py runserver
@@ -38,7 +40,7 @@ python -m venv .venv
 pip install .
 ```
 
-You can then run the Django project with:
+You can then migrate the database and run the server:
 
 ```bash
 python manage.py runserver

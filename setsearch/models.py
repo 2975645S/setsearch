@@ -72,7 +72,7 @@ class Song(Model):
 
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
     name = CharField(max_length=255)
-    genres = ManyToManyField(Genre, null=True, blank=True)  # N-M
+    genres = ManyToManyField(Genre, blank=True)  # N-M
 
 
 class SetlistEntry(Model):

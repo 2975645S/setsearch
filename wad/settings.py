@@ -46,10 +46,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = is_prod
-ALLOWED_HOSTS = [env("DOMAIN", "2975645s.eu.pythonanywhere.com")]
 CSRF_COOKIE_SECURE = is_prod
 SECURE_SSL_REDIRECT = is_prod
 SESSION_COOKIE_SECURE = is_prod
+
+if is_prod:
+    ALLOWED_HOSTS = [env("DOMAIN", "2975645s.eu.pythonanywhere.com")]
+else:
+    ALLOWED_HOSTS = []
 
 # Application definition
 

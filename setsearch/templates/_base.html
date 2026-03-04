@@ -1,0 +1,18 @@
+{% load static %}
+
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'fonts/nunito.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+    <title>{% block title %}SetSearch{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+{% endblock %}
+</body>
+</html>

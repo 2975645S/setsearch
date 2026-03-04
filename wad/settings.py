@@ -50,10 +50,7 @@ CSRF_COOKIE_SECURE = is_prod
 SECURE_SSL_REDIRECT = is_prod
 SESSION_COOKIE_SECURE = is_prod
 
-if is_prod:
-    ALLOWED_HOSTS = [env("DOMAIN", "2975645s.eu.pythonanywhere.com")]
-else:
-    ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [env("DOMAIN", "2975645s.eu.pythonanywhere.com"), "127.0.0.1"]
 
 STATIC_ROOT = BASE_DIR / "static"
 

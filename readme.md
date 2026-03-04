@@ -33,7 +33,7 @@ If you have [uv](https://github.com/astral-sh/uv) installed, migrate the databas
 uv run manage.py runserver
 ```
 
-Otherwise, you must make sure you have installed **Python 3.13** and need to set up your virtual environment with:
+Otherwise, you must make sure you have installed **Python 3.13.12** and need to set up your virtual environment with:
 
 ```bash
 python -m venv .venv
@@ -45,3 +45,11 @@ You can then migrate the database and run the server:
 ```bash
 python manage.py runserver
 ```
+
+## Acknowledgements
+
+SetSearch is built on top of the following projects:
+
+- [Django v6.0.3](https://www.djangoproject.com/)
+- [Django Bootstrap 5 v26.2](https://django-bootstrap5.readthedocs.io/en)
+- [python-dotenv v1.2.2](https://github.com/theskumar/python-dotenv)

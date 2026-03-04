@@ -39,20 +39,20 @@ def env(key: str, default: Optional[T] = None, cast: Optional[Callable[[str], T]
 
 
 # === PATHS ===
-# build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+ASSETS_DIR = BASE_DIR / "assets"
+FONTS_DIR = ASSETS_DIR / "fonts"
 
 # === CONFIGURATION ===
 
 SECRET_KEY = env("SECRET_KEY")
-DEBUG = is_prod
+DEBUG = not is_prod
 CSRF_COOKIE_SECURE = is_prod
 SECURE_SSL_REDIRECT = is_prod
 SESSION_COOKIE_SECURE = is_prod
 
 ALLOWED_HOSTS = [env("DOMAIN", "2975645s.eu.pythonanywhere.com"), "127.0.0.1"]
-
-STATIC_ROOT = BASE_DIR / "static"
 
 # Application definition
 
@@ -64,7 +64,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'setsearch',
-    'django_bootstrap5'
+    'django_bootstrap5',
+    'django_google_fonts'
 ]
 
 # todo: bootstrap theme?
@@ -145,3 +146,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "static"
+STATICFILES_DIRS = [ASSETS_DIR]
+
+GOOGLE_FONTS_DIR = ASSETS_DIR
+GOOGLE_FONTS = ["Nunito"]

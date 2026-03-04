@@ -52,4 +52,5 @@ SetSearch is built on top of the following projects:
 
 - [Django v6.0.3](https://www.djangoproject.com/)
 - [Django Bootstrap 5 v26.2](https://django-bootstrap5.readthedocs.io/en)
+- [Django Google Fonts v0.0.3](https://github.com/andymckay/django-google-fonts)
 - [python-dotenv v1.2.2](https://github.com/theskumar/python-dotenv)

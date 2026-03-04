@@ -7,8 +7,6 @@ import dotenv
 
 script_dir = os.path.dirname(__file__)
 dotenv.load_dotenv(os.path.join(script_dir, ".env"))
-print(script_dir)
-
 
 def main():
     """Run administrative tasks."""

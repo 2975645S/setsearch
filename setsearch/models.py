@@ -16,7 +16,7 @@ class Artist(Model):
         mbid: The artist's MusicBrainz ID.
         name: The artist's stage name.
         user: The artist's SetSearch account.
-        picture: A URL to a picture of the artist.
+        picture: WikiMedia artist picture filename. Prepend: https://commons.wikimedia.org/wiki/Special:FilePath/
     """
 
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)

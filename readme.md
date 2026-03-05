@@ -70,4 +70,5 @@ SetSearch uses:
 - [orjson v3.11.7](https://github.com/ijl/orjson)
 - [pandas v3.0.1](https://pandas.pydata.org/)
 - [python-dotenv v1.2.2](https://github.com/theskumar/python-dotenv)
+- [requests v2.32.5](https://docs.python-requests.org/en/latest/)
 - [zstandard v0.25.0](https://python-zstandard.readthedocs.io/en/latest/)

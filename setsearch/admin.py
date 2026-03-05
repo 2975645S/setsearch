@@ -37,7 +37,7 @@ class UserAdmin(BaseUserAdmin):
 
 @register(Artist)
 class ArtistAdmin(ModelAdmin):
-    ...
+    list_display = ("name", "picture")
 
 @register(Concert)
 class ConcertAdmin(ModelAdmin):

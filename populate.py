@@ -6,6 +6,7 @@ import django
 import dotenv
 import pandas as pd
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from zstandard import ZstdDecompressor
 
 BATCH_SIZE = 10_000
@@ -17,6 +18,8 @@ def setup_django():
     dotenv.load_dotenv()
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wad.settings")
     django.setup()
+    call_command("flush", "--noinput")
+    call_command("migrate", "--noinput")
 
 
 def create_superuser():
@@ -37,7 +40,7 @@ def create_artists(dctx):
         df = pd.read_json(BytesIO(dctx.decompress(f.read())), lines=True)
 
     artists = [
-        Artist(mbid=row["mbid"], name=row["name"])
+        Artist(mbid=row["mbid"], name=row["name"], picture=row["picture"])
         for row in df.to_dict("records")
     ]
 

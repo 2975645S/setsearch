@@ -1,0 +1,8 @@
+{% extends "_base.html" %}
+
+{% block content %}
+    <h1>{{ artist.name }}</h1>
+    {% if artist.picture %}
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/{{ artist.picture }}" alt="{{ artist.name }}" height="500" />
+    {% endif %}
+{% endblock %}

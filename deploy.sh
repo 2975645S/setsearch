@@ -7,4 +7,6 @@ python scripts/env.py
 sed -i '1iPROD=""' .env
 
 python manage.py migrate
-python manage.py collectstatic
+python populate.py
+
+python manage.py collectstatic --clear --noinput

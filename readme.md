@@ -38,7 +38,7 @@ python manage.py migrate
 4. Populate the database:
 
 ```bash
-python populate.py
+python population_script.py
 ```
 
 ### Execution
@@ -54,7 +54,8 @@ python manage.py runserver
 - Song data is provided by [MusicBrainz](https://musicbrainz.org/) under the
   [CC0 1.0 Universal License](https://creativecommons.org/publicdomain/zero/1.0/).
     - [release](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260304-001001/release.tar.xz) dataset
-      (301GB)
+      (~301GB)
+    - [artist]() dataset (~15.3GB)
 - Artist popularity data is
   from [Music Artists Popularity on Kaggle](https://www.kaggle.com/datasets/pieca111/music-artists-popularity), licensed
   under the [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/).
@@ -63,9 +64,9 @@ python manage.py runserver
 
 SetSearch uses:
 
-- [Django v6.0.3](https://www.djangoproject.com/)
-- [Django Bootstrap 5 v26.2](https://django-bootstrap5.readthedocs.io/en)
-- [Django Google Fonts v0.0.3](https://github.com/andymckay/django-google-fonts)
+- [django v6.0.3](https://www.djangoproject.com/)
+- [django-bootstrap-5 v26.2](https://django-bootstrap5.readthedocs.io/en)
+- [django-google-fonts v0.0.3](https://github.com/andymckay/django-google-fonts)
 - [kagglehub v1.0.0](https://github.com/Kaggle/kagglehub)
 - [orjson v3.11.7](https://github.com/ijl/orjson)
 - [pandas v3.0.1](https://pandas.pydata.org/)

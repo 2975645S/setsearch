@@ -28,7 +28,7 @@ def load_artists() -> pd.DataFrame:
                      dtype={"mbid": str, "artist_mb": str, "listeners_lastfm": float, "ambiguous_artist": bool})
     df = df.dropna(subset=["mbid", "artist_mb"])  # only artists with valid mbid and name
     df = df[~df["ambiguous_artist"]].reset_index(drop=True)  # remove ambiguous artists
-    df = df.nlargest(100, "listeners_lastfm").reset_index(drop=True) # keep the top 100 artists
+    df = df.nlargest(75, "listeners_lastfm").reset_index(drop=True) # keep the top 75 artists
     popular_mbids = df["mbid"].values
 
     # combine with musicbrainz data

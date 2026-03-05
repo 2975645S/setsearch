@@ -8,8 +8,10 @@ dependencies = [
     "django-bootstrap5==26.2",
     "django-google-fonts==0.0.3",
     "kagglehub==1.0.0",
+    "orjson==3.11.7",
     "pandas==3.0.1",
     "python-dotenv==1.2.2",
+    "zstandard==0.25.0",
 ]
 
 [dependency-groups]

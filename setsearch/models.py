@@ -1,7 +1,14 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, DateField, FloatField, \
-    ManyToManyField, SmallIntegerField, DateTimeField
+    ManyToManyField, SmallIntegerField, DateTimeField, URLField, Index
 from django.utils import timezone
+
+class User(AbstractUser):
+    first_name = None
+    last_name = None
+
+    def __str__(self):
+        return self.username
 
 class Artist(Model):
     """
@@ -9,15 +16,16 @@ class Artist(Model):
         mbid: The artist's MusicBrainz ID.
         name: The artist's stage name.
         user: The artist's SetSearch account.
+        picture: A URL to a picture of the artist.
     """
 
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
-    name = CharField(max_length=255)
+    name = CharField(max_length=255, db_index=True)
     user = OneToOneField(User, on_delete=SET_NULL, null=True, blank=True)  # 1-1
+    picture = URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name
-
 
 class Concert(Model):
     """
@@ -29,7 +37,7 @@ class Concert(Model):
         modified_by: The SetSearch user who most recently modified the concert.
     """
 
-    artist = ForeignKey(Artist, on_delete=CASCADE)  # 1-N
+    artist = ForeignKey(Artist, on_delete=CASCADE, db_index=True)  # 1-N
     date = DateField()
     venue = CharField(max_length=255)
     last_modified = DateTimeField(default=timezone.now)
@@ -51,8 +59,12 @@ class Attendance(Model):
     rating = FloatField(null=True, blank=True)
 
     class Meta:
-        verbose_name = "Concert Attendance"
-        verbose_name_plural = "Concert Attendances"
+        verbose_name = "attendance"
+        verbose_name_plural = "attendances"
+
+        indexes = [
+            Index(fields=["user", "concert"]) # has user attended concert?
+        ]
 
 
 class Genre(Model):
@@ -61,20 +73,28 @@ class Genre(Model):
         name: The genre's name.
     """
 
-    name = CharField(max_length=255)
+    name = CharField(max_length=255, db_index=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Song(Model):
     """
     Attributes:
         mbid: The song's MusicBrainz ID.
-        name: The song's name.
+        title: The song's title.
+        artist: The artist who performed the song.
         genres: The genres associated with the song.
     """
 
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
-    name = CharField(max_length=255)
-    genres = ManyToManyField(Genre, blank=True)  # N-M
+    title = CharField(max_length=255, db_index=True)
+    artist = ForeignKey(Artist, on_delete=CASCADE) # 1-N
+    genres = ManyToManyField(Genre, blank=True)    # N-M
+
+    def __str__(self):
+        return f"{self.artist.name} - {self.title}"
 
 
 class SetlistEntry(Model):
@@ -92,5 +112,9 @@ class SetlistEntry(Model):
     position = SmallIntegerField()
 
     class Meta:
-        verbose_name = "Setlist Entry"
-        verbose_name_plural = "Setlist Entries"
+        verbose_name = "setlist entry"
+        verbose_name_plural = "setlist entries"
+
+        indexes = [
+            Index(fields=["concert", "position"]), # get setlist for concert, ordered by position
+        ]

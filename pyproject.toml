@@ -7,12 +7,12 @@ dependencies = [
     "django==6.0.3",
     "django-bootstrap5==26.2",
     "django-google-fonts==0.0.3",
+    "kagglehub==1.0.0",
+    "pandas==3.0.1",
     "python-dotenv==1.2.2",
 ]
 
 [dependency-groups]
 dev = [
-    "kagglehub==1.0.0",
-    "pandas==3.0.1",
     "pre-commit==4.5.1",
 ]

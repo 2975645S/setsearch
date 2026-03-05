@@ -437,13 +437,13 @@ dependencies = [
     { name = "django" },
     { name = "django-bootstrap5" },
     { name = "django-google-fonts" },
+    { name = "kagglehub" },
+    { name = "pandas" },
     { name = "python-dotenv" },
 ]
 
 [package.dev-dependencies]
 dev = [
-    { name = "kagglehub" },
-    { name = "pandas" },
     { name = "pre-commit" },
 ]
 
@@ -452,15 +452,13 @@ requires-dist = [
     { name = "django", specifier = "==6.0.3" },
     { name = "django-bootstrap5", specifier = "==26.2" },
     { name = "django-google-fonts", specifier = "==0.0.3" },
+    { name = "kagglehub", specifier = "==1.0.0" },
+    { name = "pandas", specifier = "==3.0.1" },
     { name = "python-dotenv", specifier = "==1.2.2" },
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "kagglehub", specifier = "==1.0.0" },
-    { name = "pandas", specifier = "==3.0.1" },
-    { name = "pre-commit", specifier = "==4.5.1" },
-]
+dev = [{ name = "pre-commit", specifier = "==4.5.1" }]
 
 [[package]]
 name = "webencodings"

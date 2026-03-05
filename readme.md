@@ -9,6 +9,7 @@ and [2972355H](#) for [Web Application Development 2](https://www.gla.ac.uk/cour
 Install pre-commit hooks:
 
 ```bash
+uv sync --all-groups
 uv run pre-commit install
 ```
 

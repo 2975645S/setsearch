@@ -460,15 +460,17 @@ dependencies = [
     { name = "django" },
     { name = "django-bootstrap5" },
     { name = "django-google-fonts" },
-    { name = "kagglehub" },
-    { name = "orjson" },
     { name = "pandas" },
     { name = "python-dotenv" },
-    { name = "requests" },
     { name = "zstandard" },
 ]
 
 [package.dev-dependencies]
+data = [
+    { name = "kagglehub" },
+    { name = "orjson" },
+    { name = "requests" },
+]
 dev = [
     { name = "pre-commit" },
 ]
@@ -478,15 +480,17 @@ requires-dist = [
     { name = "django", specifier = "==6.0.3" },
     { name = "django-bootstrap5", specifier = "==26.2" },
     { name = "django-google-fonts", specifier = "==0.0.3" },
-    { name = "kagglehub", specifier = "==1.0.0" },
-    { name = "orjson", specifier = "==3.11.7" },
     { name = "pandas", specifier = "==3.0.1" },
     { name = "python-dotenv", specifier = "==1.2.2" },
-    { name = "requests", specifier = "==2.32.5" },
     { name = "zstandard", specifier = "==0.25.0" },
 ]
 
 [package.metadata.requires-dev]
+data = [
+    { name = "kagglehub", specifier = "==1.0.0" },
+    { name = "orjson", specifier = "==3.11.7" },
+    { name = "requests", specifier = "==2.32.5" },
+]
 dev = [{ name = "pre-commit", specifier = "==4.5.1" }]
 
 [[package]]

@@ -15,7 +15,7 @@ if __name__ == "__main__":
     has_uv = shutil.which("uv") is not None
 
     if has_uv:
-        contents = subprocess.run(["uv", "export", "--format", "requirements.txt"], **KWARGS)
+        contents = subprocess.run(["uv", "export", "--no-group", "data", "--no-group", "dev", "--format", "requirements.txt"], **KWARGS)
     else:
         contents = subprocess.run(["pip", "freeze"], **KWARGS)
 

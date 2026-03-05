@@ -82,13 +82,15 @@ class Genre(Model):
 class Song(Model):
     """
     Attributes:
-        mbid: The song's MusicBrainz ID.
+        track_mbid: The song's MusicBrainz Track ID.
+        release_mbid: The song's MusicBrainz Release ID.
         title: The song's title.
         artist: The artist who performed the song.
         genres: The genres associated with the song.
     """
 
-    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
+    track_mbid = CharField("MusicBrainz Track ID", max_length=36, primary_key=True)
+    release_mbid = CharField("MusicBrainz Release ID", max_length=36, null=True, blank=True)
     title = CharField(max_length=255, db_index=True)
     artist = ForeignKey(Artist, on_delete=CASCADE) # 1-N
     genres = ManyToManyField(Genre, blank=True)    # N-M

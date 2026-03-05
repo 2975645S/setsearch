@@ -1,5 +1,4 @@
 # todo: download artist pics from wikidata
-# todo: genres
 
 import os
 from pathlib import Path
@@ -42,6 +41,7 @@ def load_songs(mbids: Set[str]) -> pd.DataFrame:
     with open(DOWNLOADED_DIR / "release", "rb") as f:
         for line in f:
             release = orjson.loads(line)
+            release_mbid = release.get("id")
 
             for media in release.get("media", []):
                 for track in media.get("tracks", []):
@@ -56,15 +56,20 @@ def load_songs(mbids: Set[str]) -> pd.DataFrame:
                     if track_mbid in seen:
                         continue
 
+                    tags = recording.get("tags", [])
+                    genres = [tag["name"] for tag in tags]
+
                     for credit in recording.get("artist-credit", []):
                         artist = credit.get("artist")
                         if artist and artist.get("id") in mbids:
                             artist_mbid = artist["id"]
                             seen.add(track_mbid)
                             rows.append({
-                                "mbid": track_mbid,
+                                "track_mbid": track_mbid,
+                                "release_mbid": release_mbid,
+                                "artist_mbid": artist_mbid,
                                 "title": title,
-                                "artist_mbid": artist_mbid
+                                "genres": genres
                             })
 
     df = pd.DataFrame(rows)
@@ -75,14 +80,14 @@ if __name__ == "__main__":
     cctx = ZstdCompressor(level=19)
 
     # wrangle artists
-    artists = load_artists().to_json(orient="records", lines=True).encode("utf-8")
-    artists = cctx.compress(artists)
+    artists = load_artists()
     with open(DATA_DIR / "artists.ndjson.zst", "wb") as f:
-        f.write(artists)
+        data = artists.to_json(orient="records", lines=True).encode("utf-8")
+        f.write(cctx.compress(data))
 
     # wrangle releases
-    artist_ids = set(artists["mbid"].tolist())
-    songs = load_songs(artist_ids).to_json(orient="records", lines=True).encode("utf-8")
-    songs = cctx.compress(songs)
+    artist_ids = set(artists["mbid"])
+    songs = load_songs(artist_ids)
     with open(DATA_DIR / "songs.ndjson.zst", "wb") as f:
-        f.write(songs)
+        data = songs.to_json(orient="records", lines=True).encode("utf-8")
+        f.write(cctx.compress(data))

@@ -3,7 +3,6 @@ from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignK
     ManyToManyField, SmallIntegerField, DateTimeField
 from django.utils import timezone
 
-
 class Artist(Model):
     """
     Attributes:
@@ -15,6 +14,9 @@ class Artist(Model):
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
     name = CharField(max_length=255)
     user = OneToOneField(User, on_delete=SET_NULL, null=True, blank=True)  # 1-1
+
+    def __str__(self):
+        return self.name
 
 
 class Concert(Model):

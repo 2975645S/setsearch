@@ -5,7 +5,7 @@ from setsearch.models import *
 
 @register(Artist)
 class ArtistAdmin(ModelAdmin):
-    ...
+    list_dispay = ("name", "mbid")
 
 
 @register(Concert)

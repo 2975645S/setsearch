@@ -11,14 +11,15 @@ KWARGS = {
     "shell": True
 }
 
-has_uv = shutil.which("uv") is not None
+if __name__ == "__main__":
+    has_uv = shutil.which("uv") is not None
 
-if has_uv:
-    contents = subprocess.run(["uv", "export", "--format", "requirements.txt"], **KWARGS)
-else:
-    contents = subprocess.run(["pip", "freeze"], **KWARGS)
+    if has_uv:
+        contents = subprocess.run(["uv", "export", "--format", "requirements.txt"], **KWARGS)
+    else:
+        contents = subprocess.run(["pip", "freeze"], **KWARGS)
 
-with open("requirements.txt", "w") as f:
-    f.write(contents.stdout)
+    with open("requirements.txt", "w") as f:
+        f.write(contents.stdout)
 
-subprocess.run(["git", "add", "requirements.txt"], **KWARGS)
+    subprocess.run(["git", "add", "requirements.txt"], **KWARGS)

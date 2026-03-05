@@ -4,7 +4,7 @@ Built by [2975645S](https://github.com/2975645S), [2961649C](https://github.com/
 
 ## Development
 
-Make sure you install the pre-commit hooks by running:
+Install pre-commit hooks:
 
 ```bash
 uv run pre-commit install
@@ -14,33 +14,32 @@ uv run pre-commit install
 
 ### Preparation
 
-One thing you need to do to prepare is populate your `.env` file. To make this easier, a template file is
-provided in [`.env.example`](.env.example). If you don't want to do this yourself, you can run the provided [
-`env.py`](scripts/env.py)
-script and it will automatically be populated for you. You must also migrate the database. You can do these two things
-with the following commands:
-
-```bash
-python scripts/env.py
-python manage.py migrate
-```
-
-### Execution
-
-If you have [uv](https://github.com/astral-sh/uv) installed, migrate the database and run the server:
-
-```bash
-uv run manage.py runserver
-```
-
-Otherwise, you must make sure you have installed **Python 3.13.12** and need to set up your virtual environment with:
+1. Setup **Python 3.13.12** virtual environment and install dependencies:
 
 ```bash
 python -m venv .venv
-pip install .
+pip install -r requirements.txt
 ```
 
-You can then migrate the database and run the server:
+2. Populate your `.env` file using the template `[.env.example](.env.example)` or run the script:
+
+```bash
+python scripts/env.py
+```
+
+3. Apply database migrations:
+
+```bash
+python manage.py migrate
+```
+
+4. Populate the database:
+
+```bash
+python scripts/populate.py
+```
+
+### Execution
 
 ```bash
 python manage.py runserver
@@ -48,7 +47,18 @@ python manage.py runserver
 
 ## Acknowledgements
 
-SetSearch is built on top of the following projects:
+### Data
+
+- Most data is provided by [MusicBrainz](https://musicbrainz.org/) under the
+  [CC0 1.0 Universal License](https://creativecommons.org/publicdomain/zero/1.0/).
+- Artist popularity data is
+  from [Music Artists Popularity on Kaggle](https://www.kaggle.com/datasets/pieca111/music-artists-popularity), licensed
+  under the
+  [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/)
+
+### Dependencies
+
+SetSearch uses:
 
 - [Django v6.0.3](https://www.djangoproject.com/)
 - [Django Bootstrap 5 v26.2](https://django-bootstrap5.readthedocs.io/en)

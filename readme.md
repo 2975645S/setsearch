@@ -6,12 +6,38 @@ and [2972355H](#) for [Web Application Development 2](https://www.gla.ac.uk/cour
 
 ## Development
 
-Install pre-commit hooks:
+Prepare for development:
 
 ```bash
 uv sync --all-groups
+python script/env.py
 uv run pre-commit install
 ```
+
+### To-do
+
+- [ ] Sign-up/login page 
+- [ ] Search artists on homepage
+- [ ] Create concert from artist page
+  - [ ] If the artist edits the concert, make it read-only to anyone who is not superuser or the artist. Display "verified" badge.
+  - [ ] Add songs to setlist, let user reorder them
+    - Starts with empty setlist.
+  - [ ] Concerts should have an "attended?" button for authenticated users (bar the artist).
+  - [ ] Blank star rating on concert page. If authenticated, can click to set rating. Average rating
+  displayed on concert page and artist page.
+- [ ] Concert pages must have a comment box.
+- [ ] Page to modify user profile.
+- [ ] Page to list upcoming concerts.
+- [ ] Page to list concerts the user has attended.
+- [ ] Artists pages
+  - [ ] Most played songs.
+  - [ ] List of concerts.
+  - [ ] Visible only to admins, link to user account.
+
+#### Stretch
+
+- Edit log
+- Genres
 
 ## Running the code
 
@@ -30,13 +56,8 @@ pip install -r requirements.txt
 python scripts/env.py
 ```
 
-3. Apply database migrations:
-
-```bash
-python manage.py migrate
-```
-
-4. Populate the database:
+3. Populate the database:
+  - This will automatically migrate your database for you!
 
 ```bash
 python population_script.py

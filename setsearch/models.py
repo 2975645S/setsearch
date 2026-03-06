@@ -1,7 +1,26 @@
+from typing import TypeVar
+
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, DateField, FloatField, \
     ManyToManyField, SmallIntegerField, DateTimeField, URLField, Index
+from django.db.models.fields import SlugField
 from django.utils import timezone
+from django.utils.text import slugify
+
+M = TypeVar("M", bound=Model)
+
+def unique_slug(instance: M, field: str, value: str) -> str:
+    slug = slugify(value)
+    unique = slug
+    n = 1
+    Model = instance.__class__
+
+    # increment n until slug is unique for field in model
+    while Model.objects.filter(**{field: unique}).exists():
+        unique = f"{slug}-{n}"
+        n += 1
+
+    return unique
 
 class User(AbstractUser):
     first_name = None
@@ -21,8 +40,14 @@ class Artist(Model):
 
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
     name = CharField(max_length=255, db_index=True)
+    slug = SlugField(blank=True)
     user = OneToOneField(User, on_delete=SET_NULL, null=True, blank=True)  # 1-1
     picture = URLField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = unique_slug(self, "slug", self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

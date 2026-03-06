@@ -41,16 +41,11 @@ def create_artists(dctx: ZstdDecompressor):
     from setsearch.models import Artist
 
     df = read_zst_to_df(dctx, DATA_DIR / "artists.ndjson.zst")
-    artists = [
-        Artist(mbid=row["mbid"], name=row["name"], picture=row["picture"])
-        for row in df.to_dict("records")
-    ]
 
-    Artist.objects.bulk_create(
-        artists,
-        batch_size=BATCH_SIZE,
-        ignore_conflicts=True,
-    )
+    # insert individually to trigger slug generation
+    for row in df.to_dict("records"):
+        artist = Artist(mbid=row["mbid"], name=row["name"], picture=row["picture"])
+        artist.save()
 
 
 def create_songs_and_genres(dctx: ZstdDecompressor):

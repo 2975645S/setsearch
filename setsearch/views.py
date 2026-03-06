@@ -8,6 +8,7 @@ def home(request: HttpRequest) -> HttpResponse:
     return render(request, "home.html")
 
 
-def artist(request: HttpRequest, artist_id: str) -> HttpResponse:
-    artist = Artist.objects.get(mbid=artist_id)
+def artist(request: HttpRequest, slug: str) -> HttpResponse:
+    # todo: handle 404
+    artist = Artist.objects.get(slug=slug)
     return render(HttpRequest(), "artist.html", {"artist": artist})

@@ -1,6 +1,7 @@
 static
 assets/fonts
 data/downloaded
+*.ndjson
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

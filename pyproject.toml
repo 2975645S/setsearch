@@ -7,7 +7,7 @@ dependencies = [
     "django==6.0.3",
     "django-bootstrap5==26.2",
     "django-google-fonts==0.0.3",
-    "pandas==3.0.1",
+    "orjson==3.11.7",
     "python-dotenv==1.2.2",
     "zstandard==0.25.0",
 ]
@@ -18,6 +18,6 @@ dev = [
 ]
 data = [
     "kagglehub==1.0.0",
-    "orjson==3.11.7",
+    "pandas==3.0.1",
     "requests==2.32.5",
 ]

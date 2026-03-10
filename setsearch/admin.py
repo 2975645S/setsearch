@@ -48,19 +48,9 @@ class ConcertAdmin(ModelAdmin):
 class AttendanceAdmin(ModelAdmin):
     ...
 
-@register(Genre)
-class GenreAdmin(ModelAdmin):
-    search_fields = ("name",)
-
-
 @register(Song)
 class SongAdmin(ModelAdmin):
-    list_display = ("title", "artist", "genre_list")
-    autocomplete_fields = ("genres",)
-
-    def genre_list(self, obj):
-        return ", ".join(g.name for g in obj.genres.all())
-    genre_list.short_description = "Genres"
+    list_display = ("title", "artist")
 
 @register(SetlistEntry)
 class SetlistEntryAdmin(ModelAdmin):

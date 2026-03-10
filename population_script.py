@@ -1,29 +1,48 @@
-# todo: logging
-
+import logging
 import os
+from io import TextIOWrapper
 from pathlib import Path
+from typing import Generator
 
 import django
 import dotenv
-import pandas as pd
+import orjson
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
+from django.db.models import Model
 from zstandard import ZstdDecompressor
 
-BATCH_SIZE = 10_000
+BATCH_SIZE = 100_000
 GENRES_N = 100
 DATA_DIR = BASE_DIR = Path(__file__).resolve().parent / "data"
+
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
+logger = logging.getLogger()
 
 
 def setup_django():
     dotenv.load_dotenv()
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wad.settings")
     django.setup()
-    call_command("flush", "--noinput")
-    call_command("migrate", "--noinput")
 
 
-def create_superuser():
+def clean_db(models: list[type[Model]]):
+    """Delete all records from the specified models."""
+    for model in models:
+        records = model.objects.all()
+        logger.info(f"Deleting {records.count():,} records from {model.__name__}...")
+        records.delete()
+
+
+def migrate_db():
+    """Make new migrations, and migrate the database."""
+    call_command("makemigrations")
+    call_command("migrate")
+    logger.info("Database migrated successfully.")
+
+
+def create_admin():
+    """Create a default admin user if it doesn't exist."""
     User = get_user_model()
 
     if not User.objects.filter(username="admin").exists():
@@ -32,61 +51,48 @@ def create_superuser():
             email="admin@example.com",
             password="password123",
         )
+        logger.info("Admin user created: username=admin, password=password123")
+    else:
+        logger.info("Admin user already exists, skipping creation.")
 
-def read_zst_to_df(dctx: ZstdDecompressor, path: Path) -> pd.DataFrame:
-    with open(path, "rb") as f, dctx.stream_reader(f) as reader:
-        return pd.read_json(reader, lines=True)
 
-def create_artists(dctx: ZstdDecompressor):
-    from setsearch.models import Artist
+def read_zst(zstd: ZstdDecompressor, name: str) -> Generator[dict]:
+    """Read a compressed .ndjson.zst file and return a list of dictionaries."""
+    with open(DATA_DIR / f"{name}.ndjson.zst", "rb") as f, zstd.stream_reader(f) as reader:
+        text_stream = TextIOWrapper(reader, encoding="utf-8")
+        for line in text_stream:
+            yield orjson.loads(line)
 
-    df = read_zst_to_df(dctx, DATA_DIR / "artists.ndjson.zst")
 
+def create_artists(zstd: ZstdDecompressor):
+    """Create artists from the compressed dataset."""
     # insert individually to trigger slug generation
-    for row in df.to_dict("records"):
-        artist = Artist(mbid=row["mbid"], name=row["name"], picture=row["picture"])
+    for data in read_zst(zstd, "artists"):
+        artist = Artist(mbid=data["mbid"], name=data["name"], picture=data["picture"])
+        logger.debug(f"Creating artist: {artist.name} ({artist.mbid})")
         artist.save()
 
 
-def create_songs_and_genres(dctx: ZstdDecompressor):
-    from setsearch.models import Artist, Song
-
-    df = read_zst_to_df(dctx, DATA_DIR / "songs.ndjson.zst")
-    rows = df.to_dict("records")
-    #
-    # # determine top genres
-    # all_genres = set()
-    # for row in rows:
-    #     tags = row.get("genres")
-    #     if tags:
-    #         all_genres.update(tags)
-    #
-    # # create genres
-    # Genre.objects.bulk_create(
-    #     [Genre(name=g) for g in all_genres],
-    #     batch_size=BATCH_SIZE,
-    #     ignore_conflicts=True,
-    # )
-    #
-    # genre_map = {g.name: g.id for g in Genre.objects.all()}
-
-    # create songs
-    artist_map = Artist.objects.in_bulk(field_name="mbid")
-
+def create_songs(zstd: ZstdDecompressor):
+    """Create songs from the compressed dataset."""
+    artists = Artist.objects.in_bulk(field_name="mbid")
     songs = []
-    for row in rows:
-        artist = artist_map.get(row["artist_mbid"])
+
+    for data in read_zst(zstd, "songs"):
+        artist = artists.get(data["artist"])
         if not artist:
             continue
 
         songs.append(
             Song(
-                track_mbid=row["track_mbid"],
-                release_mbid=row["release_mbid"],
-                title=row["title"],
+                mbid=data["mbid"],
+                title=data["title"],
                 artist_id=artist.mbid,
+                picture=data["picture"]
             )
         )
+
+    logger.info(f"Creating {len(songs):,} songs in batches of {BATCH_SIZE:,}...")
 
     Song.objects.bulk_create(
         songs,
@@ -94,51 +100,23 @@ def create_songs_and_genres(dctx: ZstdDecompressor):
         ignore_conflicts=True,
     )
 
-    # # relate genres to songs
-    # song_map = Song.objects.in_bulk(field_name="track_mbid")
-    # through = Song.genres.through
-    #
-    # buffer = []
-    #
-    # for row in rows:
-    #     song = song_map.get(row["track_mbid"])
-    #     if not song:
-    #         continue
-    #
-    #     tags = row.get("genres")
-    #     if not tags:
-    #         continue
-    #
-    #     for g in tags:
-    #         gid = genre_map.get(g)
-    #         if gid:
-    #             buffer.append(
-    #                 through(
-    #                     song_id=song.track_mbid,
-    #                     genre_id=gid,
-    #                 )
-    #             )
-    #
-    #     if len(buffer) >= BATCH_SIZE:
-    #         through.objects.bulk_create(
-    #             buffer,
-    #             batch_size=BATCH_SIZE,
-    #             ignore_conflicts=True,
-    #         )
-    #         buffer.clear()
-    #
-    # if buffer:
-    #     through.objects.bulk_create(
-    #         buffer,
-    #         batch_size=BATCH_SIZE,
-    #         ignore_conflicts=True,
-    #     )
+    logger.info("Songs created successfully.")
 
 
 if __name__ == "__main__":
-    dctx = ZstdDecompressor()
-
     setup_django()
-    create_superuser()
-    create_artists(dctx)
-    create_songs_and_genres(dctx)
+    from setsearch.models import *
+
+    logger.info("=== MIGRATE ===")
+    migrate_db()
+
+    logger.info("=== CLEAN ===")
+    clean_db([Artist, Song])
+
+    logger.info("=== CREATE ADMIN USER ===")
+    create_admin()
+
+    logger.info("=== POPULATE ARTISTS AND SONGS ===")
+    zstd = ZstdDecompressor()
+    create_artists(zstd)
+    create_songs(zstd)

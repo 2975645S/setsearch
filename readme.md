@@ -37,7 +37,6 @@ uv run pre-commit install
 #### Stretch
 
 - Edit log
-- Genres
 
 ## Running the code
 
@@ -73,11 +72,13 @@ python manage.py runserver
 
 ### Data
 
-- Song data is provided by [MusicBrainz](https://musicbrainz.org/) under the
+The following datasets were processed to build the population data:
+
+- The following datasets were provided by [MusicBrainz](https://musicbrainz.org/) under the
   [CC0 1.0 Universal License](https://creativecommons.org/publicdomain/zero/1.0/).
     - [release](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260304-001001/release.tar.xz) dataset
       (~301GB)
-    - [artist]() dataset (~15.3GB)
+    - [artist](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260304-001001/artist.tar.xz) dataset (~15.3GB)
 - Artist popularity data is
   from [Music Artists Popularity on Kaggle](https://www.kaggle.com/datasets/pieca111/music-artists-popularity), licensed
   under the [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/).
@@ -89,9 +90,6 @@ SetSearch uses:
 - [django v6.0.3](https://www.djangoproject.com/)
 - [django-bootstrap-5 v26.2](https://django-bootstrap5.readthedocs.io/en)
 - [django-google-fonts v0.0.3](https://github.com/andymckay/django-google-fonts)
-- [kagglehub v1.0.0](https://github.com/Kaggle/kagglehub)
 - [orjson v3.11.7](https://github.com/ijl/orjson)
-- [pandas v3.0.1](https://pandas.pydata.org/)
 - [python-dotenv v1.2.2](https://github.com/theskumar/python-dotenv)
-- [requests v2.32.5](https://docs.python-requests.org/en/latest/)
 - [zstandard v0.25.0](https://python-zstandard.readthedocs.io/en/latest/)

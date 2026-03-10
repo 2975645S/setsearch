@@ -2,7 +2,7 @@ from typing import TypeVar
 
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, DateField, FloatField, \
-    ManyToManyField, SmallIntegerField, DateTimeField, URLField, Index
+    SmallIntegerField, DateTimeField, URLField, Index
 from django.db.models.fields import SlugField
 from django.utils import timezone
 from django.utils.text import slugify
@@ -42,7 +42,7 @@ class Artist(Model):
     name = CharField(max_length=255, db_index=True)
     slug = SlugField(blank=True)
     user = OneToOneField(User, on_delete=SET_NULL, null=True, blank=True)  # 1-1
-    picture = URLField(null=True, blank=True)
+    picture = CharField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -91,34 +91,19 @@ class Attendance(Model):
             Index(fields=["user", "concert"]) # has user attended concert?
         ]
 
-
-class Genre(Model):
-    """
-    Attributes:
-        name: The genre's name.
-    """
-
-    name = CharField(max_length=255, db_index=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Song(Model):
     """
     Attributes:
-        track_mbid: The song's MusicBrainz Track ID.
-        release_mbid: The song's MusicBrainz Release ID.
+        mbid: The song's MusicBrainz ID.
         title: The song's title.
         artist: The artist who performed the song.
-        genres: The genres associated with the song.
+        picture: Cover art for the song.
     """
 
-    track_mbid = CharField("MusicBrainz Track ID", max_length=36, primary_key=True)
-    release_mbid = CharField("MusicBrainz Release ID", max_length=36, null=True, blank=True)
+    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
     title = CharField(max_length=255, db_index=True)
     artist = ForeignKey(Artist, on_delete=CASCADE) # 1-N
-    genres = ManyToManyField(Genre, blank=True)    # N-M
+    picture = URLField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.artist.name} - {self.title}"

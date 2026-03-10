@@ -16,8 +16,8 @@ uv run pre-commit install
 
 ### To-do
 
-- [ ] Sign-up/login page 
-- [ ] Search artists on homepage
+- [ ] Sign-up/login page
+- [x] Search artists on homepage
 - [ ] Create concert from artist page
   - [ ] If the artist edits the concert, make it read-only to anyone who is not superuser or the artist. Display "verified" badge.
   - [ ] Add songs to setlist, let user reorder them

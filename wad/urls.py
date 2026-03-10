@@ -21,6 +21,11 @@ from setsearch import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # SetSearch
     path("", views.home),
-    path("artist/<str:slug>/", views.artist)
+    path("artist/<str:slug>/", views.artist),
+
+    # API
+    path("api/artists/list", views.artist_list)
 ]

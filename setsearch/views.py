@@ -1,29 +1,63 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
+from functools import wraps
 
+from django.contrib.auth import login as auth_login
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+
+from setsearch.forms import SignUpForm, LoginForm
 from setsearch.models import Artist
+
+
+def unauthenticated(view_func):
+    @wraps(view_func)
+    def wrapper(request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        if request.user.is_authenticated:
+            return redirect("home")
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
 
 
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, "home.html")
 
 
+@unauthenticated
+def signup(request: HttpRequest) -> HttpResponse:
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect("home")
+    else:
+        form = SignUpForm()
+
+    return render(request, "signup.html", {"form": form})
+
+
+@unauthenticated
+def login(request: HttpRequest) -> HttpResponse:
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            user = form.cleaned_data["user"]
+            auth_login(request, user)
+            return redirect("home")
+    else:
+        form = LoginForm()
+
+    return render(request, "login.html", {"form": form})
+
+
 def artist(request: HttpRequest, slug: str) -> HttpResponse:
     # todo: handle 404
     artist = Artist.objects.get(slug=slug)
-    return render(HttpRequest(), "artist.html", {"artist": artist})
+    return render(request, "artist.html", {"artist": artist})
 
 
 def artist_list(request: HttpRequest) -> HttpResponse:
     artists = Artist.objects.values("name", "slug")
     return JsonResponse(list(artists), safe=False)
-# def search(request: HttpRequest) -> HttpResponse:
-#     """Search for artists by name using fuzzy matching."""
-#
-#     query = request.GET.get("query", "")
-#     artists = list(Artist.objects.values_list("name", flat=True))
-#     print(artists)
-#     matches = process.extract(query, artists, limit=10, scorer=fuzz.partial_ratio, score_cutoff=10)
-#
-#     results = [{"name": matches[0], "score": matches[1]} for matches in matches]
-#     return JsonResponse({"results": results})

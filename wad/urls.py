@@ -17,15 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from setsearch import views
+from setsearch.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # SetSearch
-    path("", views.home),
-    path("artist/<str:slug>/", views.artist),
+    path("", home, name="home"),
+    path("signup", signup, name="signup"),
+    path("login", login, name="login"),
+    path("artist/<str:slug>", artist),
 
     # API
-    path("api/artists/list", views.artist_list)
+    path("api/artists/list", artist_list)
 ]

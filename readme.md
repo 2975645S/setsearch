@@ -34,10 +34,6 @@ uv run pre-commit install
   - [ ] List of concerts.
   - [ ] Visible only to admins, link to user account.
 
-#### Stretch
-
-- Edit log
-
 ## Running the code
 
 ### Preparation

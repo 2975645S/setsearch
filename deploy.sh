@@ -6,7 +6,5 @@ pip install -r requirements.txt
 python scripts/env.py
 sed -i '1iPROD=""' .env
 
-python manage.py migrate
-python populate.py
-
+python population_script.py
 python manage.py collectstatic --clear --noinput

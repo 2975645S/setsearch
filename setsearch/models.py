@@ -68,6 +68,9 @@ class Concert(Model):
     last_modified = DateTimeField(default=timezone.now)
     modified_by = OneToOneField(User, on_delete=SET_NULL, null=True)
 
+    def __str__(self):
+        return f"{self.artist.name} @ {self.venue} [{self.date}]"
+
 
 class Attendance(Model):
     """
@@ -105,9 +108,6 @@ class Song(Model):
     artist = ForeignKey(Artist, on_delete=CASCADE) # 1-N
     picture = URLField(null=True, blank=True)
 
-    def __str__(self):
-        return f"{self.artist.name} - {self.title}"
-
 
 class SetlistEntry(Model):
     """
@@ -129,4 +129,20 @@ class SetlistEntry(Model):
 
         indexes = [
             Index(fields=["concert", "position"]), # get setlist for concert, ordered by position
+        ]
+
+class Comment(Model):
+    """A user commented on a concert."""
+
+    user = ForeignKey(User, on_delete=CASCADE)
+    concert = ForeignKey(Concert, on_delete=CASCADE)
+    content = CharField(max_length=1000)
+    timestamp = DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "comment"
+        verbose_name_plural = "comments"
+
+        indexes = [
+            Index(fields=["concert", "timestamp"]), # get comments for concert, ordered by timestamp
         ]

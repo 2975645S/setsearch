@@ -37,7 +37,7 @@ class UserAdmin(BaseUserAdmin):
 
 @register(Artist)
 class ArtistAdmin(ModelAdmin):
-    list_display = ("name", "slug")
+    list_display = ("name", "mbid")
 
 @register(Concert)
 class ConcertAdmin(ModelAdmin):
@@ -50,8 +50,12 @@ class AttendanceAdmin(ModelAdmin):
 
 @register(Song)
 class SongAdmin(ModelAdmin):
-    list_display = ("title", "artist")
+    list_display = ("title", "artist", "mbid")
 
 @register(SetlistEntry)
 class SetlistEntryAdmin(ModelAdmin):
     ...
+
+@register(Comment)
+class CommentAdmin(ModelAdmin):
+    list_display = ("concert", "user", "timestamp", "content")

@@ -72,9 +72,10 @@ The following datasets were processed to build the population data:
 
 - The following datasets were provided by [MusicBrainz](https://musicbrainz.org/) under the
   [CC0 1.0 Universal License](https://creativecommons.org/publicdomain/zero/1.0/).
+    - [artist](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260304-001001/artist.tar.xz) dataset (~15.3GB)
+    - [event](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260311-001001/event.tar.xz) (~476MB)
     - [release](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260304-001001/release.tar.xz) dataset
       (~301GB)
-    - [artist](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260304-001001/artist.tar.xz) dataset (~15.3GB)
 - Artist popularity data is
   from [Music Artists Popularity on Kaggle](https://www.kaggle.com/datasets/pieca111/music-artists-popularity), licensed
   under the [CC BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/).

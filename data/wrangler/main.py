@@ -1,20 +1,19 @@
 """
-This script takes quite a while to run, and assumes you have downloaded the `artist` and `release` data dumps from
-MusicBrainz at https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/ and placed them in `data/downloaded`.
+This script takes quite a while to run, and assumes you have downloaded the `artist`,`event` and `release` data dumps
+from MusicBrainz at https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/ and placed them in `data/downloaded`.
 
 These dumps are large, totaling over 300GB, and data is gathered from external sources, so the script outputs a
 compressed, collated dataset of its results in the `data` directory, so you don't need to run it yourself.
 It is included solely for reproducibility.
 """
-
+from io import TextIOWrapper
 from pathlib import Path
 
 import orjson
 from zstandard import ZstdCompressor
+from zstandard.backend_c import ZstdDecompressor
 
-from data.wrangler.artists import load_artists
-from data.wrangler.cover_art import fetch_all_covers
-from data.wrangler.songs import load_songs
+from data.wrangler.events import load_events
 from data.wrangler.util import get_http
 
 COMPRESSION_LEVEL = 19
@@ -34,16 +33,29 @@ if __name__ == "__main__":
     http = get_http()
     zstd = ZstdCompressor(level=COMPRESSION_LEVEL)
 
-    # artists
-    artists = load_artists(http, DATA_DIR / "downloaded" / "artist")
-    write(zstd, "artists", artists)
+    # # artists
+    # artists = load_artists(http, DATA_DIR / "downloaded" / "artist")
+    # write(zstd, "artists", artists)
+    #
+    # # songs + covers
+    # artist_ids = set(artist.mbid for artist in artists)
+    # songs, cover_refs = load_songs(DATA_DIR / "downloaded" / "release", artist_ids)
+    # covers = fetch_all_covers(http, cover_refs)
+    #
+    # for song in songs:
+    #     song.picture = covers.get(song.mbid)
+    #
+    # write(zstd, "songs", songs)
 
-    # songs + covers
-    artist_ids = set(artist.mbid for artist in artists)
-    songs, cover_refs = load_songs(DATA_DIR / "downloaded" / "release", artist_ids)
-    covers = fetch_all_covers(http, cover_refs)
 
-    for song in songs:
-        song.picture = covers.get(song.mbid)
+    artist_ids = set()
+    dctx = ZstdDecompressor()
 
-    write(zstd, "songs", songs)
+    with open(DATA_DIR / "artists.ndjson.zst", "rb") as f, dctx.stream_reader(f) as reader:
+        for line in TextIOWrapper(reader, encoding="utf-8"):
+            artist = orjson.loads(line)
+            artist_ids.add(artist.get("mbid"))
+
+    print(artist_ids)
+    concerts = load_events(DATA_DIR / "downloaded" / "event", artist_ids)
+    write(zstd, "concerts", concerts)

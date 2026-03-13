@@ -28,14 +28,14 @@ def load_songs(path: Path, artists: set[str]) -> tuple[list[Song], list[CoverArt
     songs = []
     cover_refs = []
     seen = set()
-    line_count, kept_count = 0, 0
+    read_count, kept_count = 0, 0
 
     with open(path, "rb") as f:
         for line in f:
-            line_count += 1
+            read_count += 1
 
-            if line_count % PROGRESS_INTERVAL == 0:
-                logger.info(f"Processed {line_count}, kept {kept_count} songs")
+            if read_count % PROGRESS_INTERVAL == 0:
+                logger.info(f"Read {read_count}, kept {kept_count} songs")
 
             release = orjson.loads(line)
             tracks = chain.from_iterable(media.get("tracks", []) for media in release.get("media", []))

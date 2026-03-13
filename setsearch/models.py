@@ -1,7 +1,8 @@
 from typing import TypeVar
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, DateField, FloatField, \
+from django.core.exceptions import ValidationError
+from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, FloatField, \
     SmallIntegerField, DateTimeField, URLField, Index
 from django.db.models.fields import SlugField
 from django.utils import timezone
@@ -56,21 +57,36 @@ class Concert(Model):
     """
     Attributes:
         artist: The artist who performed the concert.
-        date: The date the concert was performed.
+        title: The concert's title.
+        year: The year the concert took place.
+        month: The month the concert took place (optional).
+        day: The day the concert took place (optional).
         venue: The venue who performed the concert.
         last_modified: The date the concert was last modified.
         modified_by: The SetSearch user who most recently modified the concert.
     """
 
     artist = ForeignKey(Artist, on_delete=CASCADE, db_index=True)  # 1-N
-    date = DateField()
+    title = CharField(max_length=255, null=True)
+    year = SmallIntegerField()
+    month = SmallIntegerField(null=True)
+    day = SmallIntegerField(null=True)
     venue = CharField(max_length=255)
     last_modified = DateTimeField(default=timezone.now)
-    modified_by = OneToOneField(User, on_delete=SET_NULL, null=True)
+    modified_by = ForeignKey(User, on_delete=SET_NULL, null=True)
+
+    def clean(self):
+        if self.day and not self.month:
+            raise ValidationError("Month must be provided if day is provided.")
+
+        if self.month and not (1 <= self.month <= 12):
+            raise ValidationError("Month must be between 1 and 12.")
+
+        if self.day and not (1 <= self.day <= 31):
+            raise ValidationError("Day must be between 1 and 31.")
 
     def __str__(self):
-        return f"{self.artist.name} @ {self.venue} [{self.date}]"
-
+        return self.title
 
 class Attendance(Model):
     """

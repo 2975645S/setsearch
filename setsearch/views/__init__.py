@@ -9,7 +9,6 @@ def home_page(request: HttpRequest) -> HttpResponse:
 
 
 def view_artist(request: HttpRequest, artist_slug: str) -> HttpResponse:
-    # todo: handle 404 (done)
     artist = get_object_or_404(Artist, slug=artist_slug)
     return render(request, "artist.html", {"artist": artist})
 

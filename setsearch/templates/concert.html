@@ -8,16 +8,25 @@
     <h1>{{ concert.artist.name }} @ {{ concert.venue }}</h1>
     <p>{{ concert.date }}</p>
     <hr>
+    <h4>Setlist</h4>
+    <div>
+        {% for entry in setlist %}
+            <p>{{ forloop.counter }}. {{ entry.song.artist.name }} - {{ entry.song.title }}</p>
+        {% empty %}
+            <p class="text-muted">No setlist available.</p>
+        {% endfor %}
+    </div>
+    <hr>
     <h4>Comments</h4>
     <div id="comments-list">
-    {% for comment in comments %}
-        <div class="mb-2">
-                <strong>{{ comment.user.username }}</strong>:
-                <small class="text-muted">{{ comment.timestamp|date:"d M Y H:i" }}</small>
-                <p>{{ comment.content }}</p>
-        </div>
-        {% empty %}
-        <p class="text-muted" id="no-comments">No comments yet.</p>
-    {% endfor %}
+        {% for comment in comments %}
+            <div class="mb-2">
+                    <strong>{{ comment.user.username }}</strong>:
+                    <small class="text-muted">{{ comment.timestamp|date:"d M Y H:i" }}</small>
+                    <p>{{ comment.content }}</p>
+            </div>
+            {% empty %}
+            <p class="text-muted" id="no-comments">No comments yet.</p>
+        {% endfor %}
     </div>
 {% endblock %}

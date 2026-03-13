@@ -7,7 +7,6 @@ from typing import Generator
 import django
 import dotenv
 import orjson
-from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.db.models import Model
 from zstandard import ZstdDecompressor
@@ -64,6 +63,13 @@ def read_zst(zstd: ZstdDecompressor, name: str) -> Generator[dict]:
             yield orjson.loads(line)
 
 
+def bulk_create(objects: list[Model]):
+    clazz = objects[0].__class__
+    logger.info(f"Creating {len(objects):,} {clazz.__name__}s in batches of {BATCH_SIZE:,}...")
+    clazz.objects.bulk_create(objects, batch_size=BATCH_SIZE, ignore_conflicts=True)
+    logger.info(f"{clazz.__name__}s created successfully.")
+
+
 def create_artists(zstd: ZstdDecompressor):
     """Create artists from the compressed dataset."""
     # insert individually to trigger slug generation
@@ -71,6 +77,7 @@ def create_artists(zstd: ZstdDecompressor):
         artist = Artist(mbid=data["mbid"], name=data["name"], picture=data["picture"])
         logger.debug(f"Creating artist: {artist.name} ({artist.mbid})")
         artist.save()
+    logger.info("Artists created successfully.")
 
 
 def create_songs(zstd: ZstdDecompressor):
@@ -92,38 +99,41 @@ def create_songs(zstd: ZstdDecompressor):
             )
         )
 
-    logger.info(f"Creating {len(songs):,} songs in batches of {BATCH_SIZE:,}...")
+    bulk_create(songs)
 
-    Song.objects.bulk_create(
-        songs,
-        batch_size=BATCH_SIZE,
-        ignore_conflicts=True,
-    )
 
-    logger.info("Songs created successfully.")
+def create_venues(zstd: ZstdDecompressor):
+    """Create venues from the compressed dataset."""
+    venues = []
+
+    for data in read_zst(zstd, "venues"):
+        venues.append(
+            Venue(mbid=data["mbid"], name=data["name"], city=data["city"], address=data["address"])
+        )
+
+    bulk_create(venues)
 
 
 def create_concerts(zstd: ZstdDecompressor):
     """Create concerts from the compressed dataset."""
     artists = Artist.objects.in_bulk(field_name="mbid")
+    venues = Venue.objects.in_bulk(field_name="mbid")
     admin = get_user_model().objects.get(username="admin")
     concerts = []
 
     for data in read_zst(zstd, "concerts"):
         artist = artists.get(data["artist"])
-        if not artist:
+        venue = venues.get(data["venue"])
+        if not artist or not venue:
             continue
 
         concerts.append(
-            Concert(artist=artist, title=data["title"], year=data["year"], month=data["month"], day=data["day"],
-                    venue=data["venue"], modified_by=admin)
+            Concert(mbid=data["mbid"], artist=artist, title=data["title"], year=data["year"], month=data["month"],
+                    day=data["day"],
+                    venue=venue, modified_by=admin)
         )
 
-    logger.info(f"Creating {len(concerts):,} concerts in batches of {BATCH_SIZE:,}...")
-
-    Concert.objects.bulk_create(concerts, batch_size=BATCH_SIZE, ignore_conflicts=True)
-
-    logger.info("Concerts created successfully.")
+    bulk_create(concerts)
 
 
 if __name__ == "__main__":
@@ -139,8 +149,9 @@ if __name__ == "__main__":
     logger.info("=== CREATE ADMIN USER ===")
     create_admin()
 
-    logger.info("=== POPULATE ARTISTS, SONGS, AND CONCERTS ===")
+    logger.info("=== POPULATE ARTISTS, SONGS, VENUES, AND CONCERTS ===")
     zstd = ZstdDecompressor()
     create_artists(zstd)
     create_songs(zstd)
+    create_venues(zstd)
     create_concerts(zstd)

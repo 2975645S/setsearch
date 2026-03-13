@@ -1,5 +1,6 @@
 from typing import TypeVar
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, FloatField, \
@@ -9,6 +10,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 M = TypeVar("M", bound=Model)
+User = get_user_model()
 
 def unique_slug(instance: M, field: str, value: str) -> str:
     slug = slugify(value)
@@ -23,12 +25,6 @@ def unique_slug(instance: M, field: str, value: str) -> str:
 
     return unique
 
-class User(AbstractUser):
-    first_name = None
-    last_name = None
-
-    def __str__(self):
-        return self.username
 
 class Artist(Model):
     """
@@ -53,25 +49,45 @@ class Artist(Model):
     def __str__(self):
         return self.name
 
+
+class Venue(Model):
+    """
+    Attributes:
+        mbid: The venue's MusicBrainz ID.
+        name: The venue's name.
+        city: The city the venue is located in.
+        address: The venue's address.
+    """
+
+    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
+    name = CharField(max_length=255)
+    city = CharField(max_length=255, null=True)
+    address = CharField(max_length=255, null=True)
+
+    def __str__(self):
+        return f"{self.name}, {self.city}"
+
 class Concert(Model):
     """
     Attributes:
+        mbid: The concert's MusicBrainz ID.
         artist: The artist who performed the concert.
         title: The concert's title.
         year: The year the concert took place.
-        month: The month the concert took place (optional).
-        day: The day the concert took place (optional).
-        venue: The venue who performed the concert.
+        month: The month the concert took place.
+        day: The day the concert took place.
+        venue: The venue that the concert was performed in.
         last_modified: The date the concert was last modified.
         modified_by: The SetSearch user who most recently modified the concert.
     """
 
+    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
     artist = ForeignKey(Artist, on_delete=CASCADE, db_index=True)  # 1-N
     title = CharField(max_length=255, null=True)
     year = SmallIntegerField()
     month = SmallIntegerField(null=True)
     day = SmallIntegerField(null=True)
-    venue = CharField(max_length=255)
+    venue = ForeignKey(Venue, on_delete=CASCADE, null=True)
     last_modified = DateTimeField(default=timezone.now)
     modified_by = ForeignKey(User, on_delete=SET_NULL, null=True)
 
@@ -85,8 +101,6 @@ class Concert(Model):
         if self.day and not (1 <= self.day <= 31):
             raise ValidationError("Day must be between 1 and 31.")
 
-    def __str__(self):
-        return self.title
 
 class Attendance(Model):
     """
@@ -107,8 +121,9 @@ class Attendance(Model):
         verbose_name_plural = "attendances"
 
         indexes = [
-            Index(fields=["user", "concert"]) # has user attended concert?
+            Index(fields=["user", "concert"])  # has user attended concert?
         ]
+
 
 class Song(Model):
     """
@@ -121,7 +136,7 @@ class Song(Model):
 
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
     title = CharField(max_length=255, db_index=True)
-    artist = ForeignKey(Artist, on_delete=CASCADE) # 1-N
+    artist = ForeignKey(Artist, on_delete=CASCADE)  # 1-N
     picture = URLField(null=True, blank=True)
 
 
@@ -144,8 +159,9 @@ class SetlistEntry(Model):
         verbose_name_plural = "setlist entries"
 
         indexes = [
-            Index(fields=["concert", "position"]), # get setlist for concert, ordered by position
+            Index(fields=["concert", "position"]),  # get setlist for concert, ordered by position
         ]
+
 
 class Comment(Model):
     """A user commented on a concert."""
@@ -160,5 +176,5 @@ class Comment(Model):
         verbose_name_plural = "comments"
 
         indexes = [
-            Index(fields=["concert", "timestamp"]), # get comments for concert, ordered by timestamp
+            Index(fields=["concert", "timestamp"]),  # get comments for concert, ordered by timestamp
         ]

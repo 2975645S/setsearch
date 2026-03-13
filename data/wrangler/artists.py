@@ -73,14 +73,14 @@ def load_artists(http: Session, path: Path) -> list[Artist]:
     popular = get_popular_artists()
     artists = []
     futures = []
-    line_count, kept_count = 0, 0
+    read_count, kept_count = 0, 0
 
     with open(path, "rb") as f, ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
         for line in f:
-            line_count += 1
+            read_count += 1
 
-            if line_count % PROGRESS_INTERVAL == 0:
-                logger.info(f"Processed {line_count}, kept {kept_count} artists")
+            if read_count % PROGRESS_INTERVAL == 0:
+                logger.info(f"Read {read_count}, kept {kept_count} artists")
 
             artist = orjson.loads(line)
             mbid = artist.get("id")

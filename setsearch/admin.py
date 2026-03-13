@@ -1,4 +1,4 @@
-from django.contrib.admin import ModelAdmin, register
+from django.contrib.admin import ModelAdmin, register, display
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from setsearch.models import *
@@ -41,7 +41,18 @@ class ArtistAdmin(ModelAdmin):
 
 @register(Concert)
 class ConcertAdmin(ModelAdmin):
-    ...
+    list_display = ("title", "artist", "date")
+
+    @display
+    def date(self, obj):
+        parts = [str(obj.year)]
+
+        if obj.month:
+            parts.insert(0, f"{obj.month:02}")
+        if obj.day:
+            parts.insert(0, f"{obj.day:02}")
+
+        return "-".join(parts)
 
 
 @register(Attendance)

@@ -103,6 +103,29 @@ def create_songs(zstd: ZstdDecompressor):
     logger.info("Songs created successfully.")
 
 
+def create_concerts(zstd: ZstdDecompressor):
+    """Create concerts from the compressed dataset."""
+    artists = Artist.objects.in_bulk(field_name="mbid")
+    admin = get_user_model().objects.get(username="admin")
+    concerts = []
+
+    for data in read_zst(zstd, "concerts"):
+        artist = artists.get(data["artist"])
+        if not artist:
+            continue
+
+        concerts.append(
+            Concert(artist=artist, title=data["title"], year=data["year"], month=data["month"], day=data["day"],
+                    venue=data["venue"], modified_by=admin)
+        )
+
+    logger.info(f"Creating {len(concerts):,} concerts in batches of {BATCH_SIZE:,}...")
+
+    Concert.objects.bulk_create(concerts, batch_size=BATCH_SIZE, ignore_conflicts=True)
+
+    logger.info("Concerts created successfully.")
+
+
 if __name__ == "__main__":
     setup_django()
     from setsearch.models import *
@@ -116,7 +139,8 @@ if __name__ == "__main__":
     logger.info("=== CREATE ADMIN USER ===")
     create_admin()
 
-    logger.info("=== POPULATE ARTISTS AND SONGS ===")
+    logger.info("=== POPULATE ARTISTS, SONGS, AND CONCERTS ===")
     zstd = ZstdDecompressor()
     create_artists(zstd)
     create_songs(zstd)
+    create_concerts(zstd)

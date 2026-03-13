@@ -57,5 +57,6 @@ if __name__ == "__main__":
             artist_ids.add(artist.get("mbid"))
 
     print(artist_ids)
-    concerts = load_events(DATA_DIR / "downloaded" / "event", artist_ids)
+    concerts, venues = load_events(DATA_DIR / "downloaded" / "event", artist_ids)
     write(zstd, "concerts", concerts)
+    write(zstd, "venues", venues)

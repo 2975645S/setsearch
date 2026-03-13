@@ -1,7 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
-from setsearch.models import Artist, Concert, Comment
+from setsearch.models import Artist, Concert, Comment, SetlistEntry
 
 
 def home_page(request: HttpRequest) -> HttpResponse:
@@ -14,6 +14,9 @@ def view_artist(request: HttpRequest, artist_slug: str) -> HttpResponse:
 
 
 def view_concert(request: HttpRequest, concert_id: str) -> HttpResponse:
-    concert = get_object_or_404(Concert, id=concert_id)
+    concert = get_object_or_404(Concert, mbid=concert_id)
     comments = Comment.objects.filter(concert=concert).order_by("timestamp")
-    return render(request, "concert.html", {"concert": concert, "comments": comments})
+    setlist = SetlistEntry.objects.filter(concert=concert).order_by("position")
+    print(setlist[0].song)
+    return render(request, "concert.html", {"concert": concert, "comments": comments, "setlist": setlist
+                                            })

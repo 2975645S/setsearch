@@ -2,10 +2,10 @@ from functools import wraps
 
 from django.contrib.auth import login as auth_login
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 
 from setsearch.forms import SignUpForm, LoginForm
-from setsearch.models import Artist
+from setsearch.models import Artist, Concert, Comment
 
 
 def unauthenticated(view_func):
@@ -53,11 +53,16 @@ def login(request: HttpRequest) -> HttpResponse:
 
 
 def artist(request: HttpRequest, slug: str) -> HttpResponse:
-    # todo: handle 404
-    artist = Artist.objects.get(slug=slug)
+    # todo: handle 404 (done)
+    artist = get_object_or_404(Artist, slug=slug)
     return render(request, "artist.html", {"artist": artist})
 
 
 def artist_list(request: HttpRequest) -> HttpResponse:
     artists = Artist.objects.values("name", "slug")
     return JsonResponse(list(artists), safe=False)
+
+def concerts(request: HttpRequest, concert_id: int) -> HttpResponse:
+    concert = get_object_or_404(Concert, id=concert_id)
+    comments = Comment.objects.filter(concert=concert).order_by("timestamp")
+    return render(request, "concerts.html", {"concert": concert, "comments": comments})

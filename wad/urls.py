@@ -27,6 +27,7 @@ urlpatterns = [
     path("signup", signup, name="signup"),
     path("login", login, name="login"),
     path("artist/<str:slug>", artist),
+    path("concert/<int:concert_id>", concerts, name="concert"),
 
     # API
     path("api/artists/list", artist_list)

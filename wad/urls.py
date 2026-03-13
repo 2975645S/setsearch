@@ -18,16 +18,22 @@ from django.contrib import admin
 from django.urls import path
 
 from setsearch.views import *
+from setsearch.views.api import *
+from setsearch.views.auth import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # SetSearch
-    path("", home, name="home"),
-    path("signup", signup, name="signup"),
-    path("login", login, name="login"),
-    path("artist/<str:slug>", artist),
+    path("", home_page, name="home"),
+    path("artist/<str:artist_slug>", view_artist),
+    path("concert/<str:concert_id>", view_concert),
+
+    # Auth
+    path("signup", signup_page, name="signup"),
+    path("login", login_page, name="login"),
+    path("logout", logout),
 
     # API
-    path("api/artists/list", artist_list)
+    path("api/artists/list", list_artists)
 ]

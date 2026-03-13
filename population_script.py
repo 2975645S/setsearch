@@ -135,6 +135,23 @@ def create_concerts(zstd: ZstdDecompressor):
 
     bulk_create(concerts)
 
+def create_entries(zstd: ZstdDecompressor):
+    """Create setlist entries from the compressed dataset."""
+    songs = Song.objects.in_bulk(field_name="mbid")
+    concerts = Concert.objects.in_bulk(field_name="mbid")
+    entries = []
+
+    for data in read_zst(zstd, "setlist"):
+        song = songs.get(data["song_mbid"])
+        concert = concerts.get(data["concert_mbid"])
+        if not song or not concert:
+            continue
+
+        entries.append(
+            SetlistEntry(concert=concert, song=song, position=data["position"])
+        )
+
+    bulk_create(entries)
 
 if __name__ == "__main__":
     setup_django()
@@ -149,9 +166,10 @@ if __name__ == "__main__":
     logger.info("=== CREATE ADMIN USER ===")
     create_admin()
 
-    logger.info("=== POPULATE ARTISTS, SONGS, VENUES, AND CONCERTS ===")
+    logger.info("=== POPULATE ARTISTS, SONGS, VENUES, CONCERTS, AND SETLIST ENTRIES ===")
     zstd = ZstdDecompressor()
     create_artists(zstd)
     create_songs(zstd)
     create_venues(zstd)
     create_concerts(zstd)
+    create_entries(zstd)

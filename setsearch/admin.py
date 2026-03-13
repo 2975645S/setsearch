@@ -37,7 +37,7 @@ class SongAdmin(ModelAdmin):
 
 @register(SetlistEntry)
 class SetlistEntryAdmin(ModelAdmin):
-    ...
+    list_display = ("song", "concert", "position")
 
 @register(Comment)
 class CommentAdmin(ModelAdmin):

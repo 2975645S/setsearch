@@ -6,14 +6,15 @@ These dumps are large, totaling over 300GB, and data is gathered from external s
 compressed, collated dataset of its results in the `data` directory, so you don't need to run it yourself.
 It is included solely for reproducibility.
 """
-from io import TextIOWrapper
 from pathlib import Path
 
 import orjson
 from zstandard import ZstdCompressor
-from zstandard.backend_c import ZstdDecompressor
 
+from data.wrangler.artists import load_artists
+from data.wrangler.cover_art import fetch_all_covers
 from data.wrangler.events import load_events
+from data.wrangler.songs import load_songs
 from data.wrangler.util import get_http
 
 COMPRESSION_LEVEL = 19
@@ -33,30 +34,41 @@ if __name__ == "__main__":
     http = get_http()
     zstd = ZstdCompressor(level=COMPRESSION_LEVEL)
 
-    # # artists
-    # artists = load_artists(http, DATA_DIR / "downloaded" / "artist")
-    # write(zstd, "artists", artists)
-    #
-    # # songs + covers
-    # artist_ids = set(artist.mbid for artist in artists)
-    # songs, cover_refs = load_songs(DATA_DIR / "downloaded" / "release", artist_ids)
-    # covers = fetch_all_covers(http, cover_refs)
-    #
-    # for song in songs:
-    #     song.picture = covers.get(song.mbid)
-    #
-    # write(zstd, "songs", songs)
+    # artists
+    artists = load_artists(http, DATA_DIR / "downloaded" / "artist")
+    write(zstd, "artists", artists)
 
+    # songs + covers
+    artist_ids = set(artist.mbid for artist in artists)
+    songs, cover_refs = load_songs(DATA_DIR / "downloaded" / "release", artist_ids)
+    covers = fetch_all_covers(http, cover_refs)
+    song_ids: dict[tuple[str, str], str] = {}
 
-    artist_ids = set()
-    dctx = ZstdDecompressor()
+    for song in songs:
+        song.picture = covers.get(song.mbid)
 
-    with open(DATA_DIR / "artists.ndjson.zst", "rb") as f, dctx.stream_reader(f) as reader:
-        for line in TextIOWrapper(reader, encoding="utf-8"):
-            artist = orjson.loads(line)
-            artist_ids.add(artist.get("mbid"))
+    write(zstd, "songs", songs)
 
-    print(artist_ids)
-    concerts, venues = load_events(DATA_DIR / "downloaded" / "event", artist_ids)
+    # venues, concerts, and setlist entries
+    concerts, venues, entries = load_events(DATA_DIR / "downloaded" / "event", song_ids, artist_ids)
     write(zstd, "concerts", concerts)
     write(zstd, "venues", venues)
+    write(zstd, "setlist", entries)
+
+    # artist_ids = set()
+    # dctx = ZstdDecompressor()
+    #
+    # with open(DATA_DIR / "artists.ndjson.zst", "rb") as f, dctx.stream_reader(f) as reader:
+    #     for line in TextIOWrapper(reader, encoding="utf-8"):
+    #         artist = orjson.loads(line)
+    #         artist_ids.add(artist.get("mbid"))
+    #
+    #
+    # with open(DATA_DIR / "songs.ndjson.zst", "rb") as f, dctx.stream_reader(f) as reader:
+    #     for line in TextIOWrapper(reader, encoding="utf-8"):
+    #         song = orjson.loads(line)
+    #         artist_id = song.get("artist")
+    #         song_id = song.get("mbid")
+    #         name = song.get("title")
+    #
+    #         song_ids[(artist_id, name)] = song_id

@@ -101,6 +101,9 @@ class Concert(Model):
         if self.day and not (1 <= self.day <= 31):
             raise ValidationError("Day must be between 1 and 31.")
 
+    def __str__(self):
+        return self.title
+
 
 class Attendance(Model):
     """
@@ -138,6 +141,9 @@ class Song(Model):
     title = CharField(max_length=255, db_index=True)
     artist = ForeignKey(Artist, on_delete=CASCADE)  # 1-N
     picture = URLField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.artist.name} - {self.title}"
 
 
 class SetlistEntry(Model):

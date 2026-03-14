@@ -1,17 +1,32 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
-from django.forms import Form
-from django.forms.fields import CharField
 from django.forms.models import ModelForm
-from django.forms.widgets import PasswordInput
-
 
 from setsearch.models import User, Comment
 
 
 class SignUpForm(ModelForm):
-    password = CharField(widget=PasswordInput())
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "class": "input w-full",
+            "placeholder": "Username"
+        })
+    )
+
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            "class": "input w-full",
+            "placeholder": "Email"
+        })
+    )
+
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            "class": "input w-full",
+            "placeholder": "Password"
+        })
+    )
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -25,9 +40,22 @@ class SignUpForm(ModelForm):
         fields = ("username", "email", "password")
 
 
-class LoginForm(Form):
-    username = CharField(label="Username")
-    password = CharField(label="Password", widget=PasswordInput())
+class LoginForm(forms.Form):
+    username = forms.CharField(
+        label="Username",
+        widget=forms.TextInput(attrs={
+            "class": "input w-full",
+            "placeholder": "Username"
+        })
+    )
+
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={
+            "class": "input w-full",
+            "placeholder": "Password"
+        })
+    )
 
     def clean(self):
         cleaned_data = super().clean()

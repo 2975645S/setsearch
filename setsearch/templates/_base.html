@@ -1,16 +1,11 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en" data-theme="mocha">
+<html lang="en">
 <head>
     <!-- todo: optimise bundle -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link
-            href="https://cdn.jsdelivr.net/combine/npm/@catppuccin/daisyui@2/latte.css,npm/@catppuccin/daisyui@2/mocha.css"
-            rel="stylesheet"
-            type="text/css"
-    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,35 +20,63 @@
 
     <title>{% block title %}SetSearch{% endblock %}</title>
 </head>
-<body class="flex flex-col min-h-screen">
-<nav class="navbar bg-secondary shadow-sm">
-    <div class="flex-1 ml-3">
-        <a class="font-semibold text-xl" href="{% url "home" %}">SetSearch</a>
+<body class="flex flex-col min-h-screen bg-base-100">
+
+<!-- Navbar -->
+<nav class="navbar bg-base-200 border-b border-base-300 px-6">
+    <div class="flex-1">
+        <a href="{% url "home" %}" class="text-xl font-bold tracking-tight hover:opacity-80">
+            SetSearch
+        </a>
     </div>
+
     <div class="flex-none">
-        <ul class="menu menu-horizontal px-1">
+        <ul class="menu menu-horizontal gap-1">
             {% if request.user.is_authenticated %}
-                <li><a href="{% url "logout" %}">Logout</a></li>
+                <li>
+                    <a class="btn btn-ghost btn-sm" href="{% url "logout" %}">
+                        Logout
+                    </a>
+                </li>
             {% else %}
-                <li><a href="{% url "signup" %}">Sign up</a></li>
-                <li><a href="{% url "login" %}">Login</a></li>
+                <li>
+                    <a class="btn btn-ghost btn-sm" href="{% url "login" %}">
+                        Login
+                    </a>
+                </li>
+                <li>
+                    <a class="btn btn-primary btn-sm" href="{% url "signup" %}">
+                        Sign up
+                    </a>
+                </li>
             {% endif %}
         </ul>
     </div>
 </nav>
 
+<!-- Page content -->
 <main class="flex-grow">
-    {% block content %}
-    {% endblock %}
+    <div class="max-w-5xl mx-auto px-6 py-10">
+        {% block content %}
+        {% endblock %}
+    </div>
 </main>
 
-<footer class="footer sm:footer-horizontal bg-secondary items-center p-4">
-    <aside class="grid-flow-col items-center">
-        <p>Copyright © SetSearch {% now "Y" %} - All right reserved</p>
-    </aside>
+<!-- Footer -->
+<footer class="border-t border-base-300 bg-base-200">
+    <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-sm opacity-80">
+        <p>
+            © {% now "Y" %} SetSearch
+        </p>
+        <p>
+            Built with Django
+        </p>
+    </div>
 </footer>
 
 {% block script %}
 {% endblock %}
+
 </body>
+</html>
 </html>

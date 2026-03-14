@@ -32,7 +32,7 @@ urlpatterns = [
     # Auth
     path("signup", signup_page, name="signup"),
     path("login", login_page, name="login"),
-    path("logout", logout),
+    path("logout", logout, name="logout"),
 
     # API
     path("api/artists/list", list_artists),

@@ -1,6 +1,6 @@
 """
-This script takes quite a while to run, and assumes you have downloaded the `artist`,`event` and `release` data dumps
-from MusicBrainz at https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/ and placed them in `data/downloaded`.
+This script takes quite a while to run, and assumes you have download the `artist`,`event` and `release` data dumps
+from MusicBrainz at https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/ and placed them in `data/download`.
 
 These dumps are large, totaling over 300GB, and data is gathered from external sources, so the script outputs a
 compressed, collated dataset of its results in the `data` directory, so you don't need to run it yourself.
@@ -35,12 +35,12 @@ if __name__ == "__main__":
     zstd = ZstdCompressor(level=COMPRESSION_LEVEL)
 
     # artists
-    artists = load_artists(http, DATA_DIR / "downloaded" / "artist")
+    artists = load_artists(http, DATA_DIR / "download" / "artist")
     write(zstd, "artists", artists)
 
     # songs + covers
     artist_ids = set(artist.mbid for artist in artists)
-    songs, cover_refs = load_songs(DATA_DIR / "downloaded" / "release", artist_ids)
+    songs, cover_refs = load_songs(DATA_DIR / "download" / "release", artist_ids)
     covers = fetch_all_covers(http, cover_refs)
     song_ids: dict[tuple[str, str], str] = {}
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     write(zstd, "songs", songs)
 
     # venues, concerts, and setlist entries
-    concerts, venues, entries = load_events(DATA_DIR / "downloaded" / "event", song_ids, artist_ids)
+    concerts, venues, entries = load_events(DATA_DIR / "download" / "event", song_ids, artist_ids)
     write(zstd, "concerts", concerts)
     write(zstd, "venues", venues)
     write(zstd, "setlist", entries)

@@ -25,12 +25,12 @@ def unique_slug(instance: M, field: str, value: str) -> str:
 
     return unique
 
-
 class Artist(Model):
     """
     Attributes:
         mbid: The artist's MusicBrainz ID.
         name: The artist's stage name.
+        slug: A URL-friendly version of the artist's name.
         user: The artist's SetSearch account.
         picture: WikiMedia artist picture filename. Prepend: https://commons.wikimedia.org/wiki/Special:FilePath/
     """
@@ -73,6 +73,7 @@ class Concert(Model):
         mbid: The concert's MusicBrainz ID.
         artist: The artist who performed the concert.
         title: The concert's title.
+        slug: A URL-friendly version of the concert's title.
         year: The year the concert took place.
         month: The month the concert took place.
         day: The day the concert took place.
@@ -83,13 +84,40 @@ class Concert(Model):
 
     mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
     artist = ForeignKey(Artist, on_delete=CASCADE, db_index=True)  # 1-N
-    title = CharField(max_length=255, null=True)
+    title = CharField(max_length=255, blank=True)
+    slug = SlugField(blank=True)
     year = SmallIntegerField()
     month = SmallIntegerField(null=True)
     day = SmallIntegerField(null=True)
     venue = ForeignKey(Venue, on_delete=CASCADE, null=True)
     last_modified = DateTimeField(default=timezone.now)
     modified_by = ForeignKey(User, on_delete=SET_NULL, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.title:
+            parts = [self.artist.name]
+
+            if self.venue and self.venue.name:
+                parts.append(f"at {self.venue.name}")
+
+            # build date string if at least year exists
+            date_parts = []
+            if self.day:
+                date_parts.append(f"{self.day:02}")  # zero-padded
+            if self.month:
+                date_parts.append(f"{self.month:02}")  # zero-padded
+            if self.year:
+                date_parts.append(str(self.year))
+
+            if date_parts:
+                parts.append("on " + "-".join(date_parts))
+
+            self.title = " ".join(parts)
+
+        if not self.slug:
+            self.slug = unique_slug(self, "slug", self.title)
+
+        super().save(*args, **kwargs)
 
     def clean(self):
         if self.day and not self.month:

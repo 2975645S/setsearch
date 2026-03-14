@@ -7,6 +7,22 @@
 {% block content %}
     <h1>{{ artist.name }}</h1>
     {% if artist.picture %}
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/{{ artist.picture }}" alt="{{ artist.name }}" height="500" />
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/{{ artist.picture }}" alt="{{ artist.name }}"
+             height="500"/>
+    {% endif %}
+    <hr>
+
+    <h4>Concerts</h4>
+
+    {% if concerts %}
+        <ul>
+            {% for concert in concerts %}
+                <li>
+                    <a href="{% url "concert" concert.artist.slug concert.slug %}">{{ concert.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No concerts available.</p>
     {% endif %}
 {% endblock %}

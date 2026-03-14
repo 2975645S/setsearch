@@ -35,5 +35,6 @@ urlpatterns = [
     path("logout", logout),
 
     # API
-    path("api/artists/list", list_artists)
+    path("api/artists/list", list_artists),
+    path("api/comments/<int:comment_id>/delete", delete_comment, name="delete_comment"),
 ]

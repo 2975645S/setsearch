@@ -119,21 +119,19 @@ def create_concerts(zstd: ZstdDecompressor):
     artists = Artist.objects.in_bulk(field_name="mbid")
     venues = Venue.objects.in_bulk(field_name="mbid")
     admin = get_user_model().objects.get(username="admin")
-    concerts = []
 
+    # insert individually to trigger slug generation
     for data in read_zst(zstd, "concerts"):
         artist = artists.get(data["artist"])
         venue = venues.get(data["venue"])
         if not artist or not venue:
             continue
 
-        concerts.append(
-            Concert(mbid=data["mbid"], artist=artist, title=data["title"], year=data["year"], month=data["month"],
-                    day=data["day"],
-                    venue=venue, modified_by=admin)
-        )
+        concert = Concert(mbid=data["mbid"], artist=artist, title=data["title"], year=data["year"], month=data["month"],
+                          day=data["day"],
+                          venue=venue, modified_by=admin)
+        concert.save()
 
-    bulk_create(concerts)
 
 def create_entries(zstd: ZstdDecompressor):
     """Create setlist entries from the compressed dataset."""
@@ -152,6 +150,7 @@ def create_entries(zstd: ZstdDecompressor):
         )
 
     bulk_create(entries)
+
 
 if __name__ == "__main__":
     setup_django()

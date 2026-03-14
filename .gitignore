@@ -1,6 +1,6 @@
 static
 assets/fonts
-data/downloaded
+data/download
 *.ndjson
 
 # Byte-compiled / optimized / DLL files

@@ -11,11 +11,12 @@ def home_page(request: HttpRequest) -> HttpResponse:
 
 def view_artist(request: HttpRequest, artist_slug: str) -> HttpResponse:
     artist = get_object_or_404(Artist, slug=artist_slug)
-    return render(request, "artist.html", {"artist": artist})
+    concerts = Concert.objects.filter(artist=artist).order_by("-year", "-month", "-day")
+    return render(request, "artist.html", {"artist": artist, "concerts": concerts})
 
 
-def view_concert(request: HttpRequest, concert_id: str) -> HttpResponse:
-    concert = get_object_or_404(Concert, mbid=concert_id)
+def view_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> HttpResponse:
+    concert = get_object_or_404(Concert, slug=concert_slug, artist__slug=artist_slug)
     comments = Comment.objects.filter(concert=concert).order_by("timestamp")
     setlist = SetlistEntry.objects.filter(concert=concert).order_by("position")
     form = CommentForm()

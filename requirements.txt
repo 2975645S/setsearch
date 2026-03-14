@@ -31,12 +31,6 @@ charset-normalizer==3.4.4 \
 django==6.0.3 \
     --hash=sha256:2e5974441491ddb34c3f13d5e7a9f97b07ba03bf70234c0a9c68b79bbb235bc3 \
     --hash=sha256:90be765ee756af8a6cbd6693e56452404b5ad15294f4d5e40c0a55a0f4870fe1
-    # via
-    #   django-bootstrap5
-    #   wad-project
-django-bootstrap5==26.2 \
-    --hash=sha256:12331059c8230ba372ffaad990a706151e1ad8f721a870aa2e862cf6746f0d33 \
-    --hash=sha256:179af37c59f4e9b1070fc650f30961c5d903c2c0ad60280ad5b63ed394f68658
     # via wad-project
 django-google-fonts==0.0.3 \
     --hash=sha256:0439c4d89919970b141258bd3be0a085cc538f4e9c53e54f40eb2953ec2e5d30 \

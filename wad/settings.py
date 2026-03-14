@@ -63,12 +63,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'setsearch',
-    'django_bootstrap5',
-    'django_google_fonts'
+    'setsearch'
 ]
-
-# todo: bootstrap theme?
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -149,5 +145,3 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "static"
 STATICFILES_DIRS = [ASSETS_DIR]
 
-GOOGLE_FONTS_DIR = ASSETS_DIR
-GOOGLE_FONTS = ["Nunito"]

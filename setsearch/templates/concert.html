@@ -43,7 +43,9 @@
     {% else %}
         <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to leave a comment.</p>
     {% endif %}
+{% endblock %}
 
+{% block script %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script>
         $(".delete-comment").click(e => {

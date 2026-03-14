@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.forms import Form
@@ -5,7 +6,8 @@ from django.forms.fields import CharField
 from django.forms.models import ModelForm
 from django.forms.widgets import PasswordInput
 
-from setsearch.models import User
+
+from setsearch.models import User, Comment
 
 
 class SignUpForm(ModelForm):
@@ -39,3 +41,12 @@ class LoginForm(Form):
             cleaned_data["user"] = user
 
         return cleaned_data
+    
+    
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            "content": forms.Textarea(attrs={"rows": 3, "placeholder": "Leave a comment..."})
+        }

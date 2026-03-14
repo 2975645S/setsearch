@@ -1,12 +1,12 @@
 {% extends "_base.html" %}
 
 {% block title %}
-    SetSearch - {{ concert.artist.name }} @ {{ concert.venue }}
+    SetSearch - {{ concert.artist.name }} @ {{ concert.venue.name }}
 {% endblock %}
 
 {% block content %}
-    <h1>{{ concert.artist.name }} @ {{ concert.venue }}</h1>
-    <p>{{ concert.date }}</p>
+    <h1>{{ concert.artist.name }} @ {{ concert.venue.name }}</h1>
+    <p>{{ concert.year }}-{{ concert.month }}-{{ concert.day }}</p>
     <hr>
     <h4>Setlist</h4>
     <div>
@@ -29,4 +29,13 @@
             <p class="text-muted" id="no-comments">No comments yet.</p>
         {% endfor %}
     </div>
+        {% if request.user.is_authenticated %}
+        <form method="post" id="comment-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    {% else %}
+            <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+    {% endif %}
 {% endblock %}

@@ -8,6 +8,7 @@
     <h1>{{ concert.artist.name }} @ {{ concert.venue.name }}</h1>
     <p>{{ concert.year }}-{{ concert.month }}-{{ concert.day }}</p>
     <hr>
+
     <h4>Setlist</h4>
     <div>
         {% for entry in setlist %}
@@ -17,25 +18,46 @@
         {% endfor %}
     </div>
     <hr>
+
     <h4>Comments</h4>
     <div id="comments-list">
         {% for comment in comments %}
             <div class="mb-2">
-                    <strong>{{ comment.user.username }}</strong>:
-                    <small class="text-muted">{{ comment.timestamp|date:"d M Y H:i" }}</small>
-                    <p>{{ comment.content }}</p>
+                <strong>{{ comment.user.username }}</strong>:
+                <small class="text-muted">{{ comment.timestamp|date:"d M Y H:i" }}</small>
+                <p>{{ comment.content }}</p>
+                {% if request.user == comment.user %}
+                    <button class="delete-comment" data-id="{{ comment.id }}">Delete</button>
+                {% endif %}
             </div>
-            {% empty %}
+        {% empty %}
             <p class="text-muted" id="no-comments">No comments yet.</p>
         {% endfor %}
     </div>
-        {% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated %}
         <form method="post" id="comment-form">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Post Comment</button>
         </form>
     {% else %}
-            <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+        <p><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to leave a comment.</p>
     {% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(".delete-comment").click(e => {
+            e.preventDefault();
+            const id = $(e.currentTarget).data("id");
+            $.ajax({
+                type: "GET",
+                url: `/api/comments/${id}/delete`,
+                success: (_) => {
+                    $(e.currentTarget).parent().remove();
+                }
+            })
+        })
+    </script>
 {% endblock %}

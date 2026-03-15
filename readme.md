@@ -87,8 +87,6 @@ The following datasets were processed to build the population data:
 SetSearch uses:
 
 - [django v6.0.3](https://www.djangoproject.com/)
-- [django-bootstrap-5 v26.2](https://django-bootstrap5.readthedocs.io/en)
-- [django-google-fonts v0.0.3](https://github.com/andymckay/django-google-fonts)
 - [orjson v3.11.7](https://github.com/ijl/orjson)
 - [python-dotenv v1.2.2](https://github.com/theskumar/python-dotenv)
 - [zstandard v0.25.0](https://python-zstandard.readthedocs.io/en/latest/)

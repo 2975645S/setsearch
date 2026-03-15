@@ -160,7 +160,7 @@ if __name__ == "__main__":
     migrate_db()
 
     logger.info("=== CLEAN ===")
-    clean_db([Artist, Song])
+    clean_db([Artist, Song, Venue, Concert])
 
     logger.info("=== CREATE ADMIN USER ===")
     create_admin()

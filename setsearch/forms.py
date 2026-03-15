@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.forms.models import ModelForm
 
 from setsearch.models import User, Comment
+from setsearch.models import Comment, Concert, Venue
 
 
 class SignUpForm(ModelForm):
@@ -77,4 +78,16 @@ class CommentForm(ModelForm):
         fields = ['content']
         widgets = {
             "content": forms.Textarea(attrs={"rows": 3, "placeholder": "Leave a comment..."})
+        }
+        
+
+class ConcertForm(forms.ModelForm):
+    class Meta:
+        model = Concert
+        fields = ["title", "venue", "year", "month", "day"]
+        widgets = {
+            "title": forms.TextInput(),
+            "year": forms.NumberInput(),
+            "month": forms.NumberInput(),
+            "day": forms.NumberInput(),
         }

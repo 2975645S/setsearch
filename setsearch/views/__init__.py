@@ -29,5 +29,7 @@ def view_concert(request: HttpRequest, concert_id: str) -> HttpResponse:
             comment.save()
             form = CommentForm() 
             
-    return render(request, "concert.html", {"concert": concert, "comments": comments, "setlist": setlist, "form": form,
+    return render(request, "concert.html",
+                  {"concert": concert, "comments": comments,
+                                            "setlist": setlist, "form": form,
                                             })

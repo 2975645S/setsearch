@@ -2,10 +2,15 @@
 {% load static %}
 
 {% block content %}
-    <h1>SetSearch</h1>
+    <h1>Welcome to SetSearch!</h1>
+    <p>Search for an artist :)</p>
 
-    <input type="text" id="search" class="form-control" placeholder="Search artists..." />
-    <ul id="results" class="list-group mt-2"></ul>
+    <div class="mb-3 position-relative" style="max-width: 400px;">
+        <input type="text" id="artist-search" class="form-control" placeholder="Search artists..." autocomplete="off">
+        <ul id="search-results" class="list-group position-absolute w-100" style="z-index: 1000; display: none;"></ul>
+    </div>
+{% endblock %}
 
-    <script src="{% static "js/home.esm.js" %}" type="module"></script>
+{% block scripts %}
+    <script type="module" src="{% static "js/home.esm.js" %}"></script>
 {% endblock %}

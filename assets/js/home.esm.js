@@ -1,34 +1,45 @@
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs'
+import $ from 'https://cdn.jsdelivr.net/npm/jquery@4.0.0/+esm'
 
-const input = document.getElementById("search");
-const results = document.getElementById("results");
+const artists = await fetch("/api/artists/list").then(res => res.json());
+const fuse = new Fuse(artists, {keys: ["name"]});
 
-// prepare fuzzy searcher
-const artists = await fetch("api/artists/list").then(res => res.json());
-const fuse = new Fuse(artists, { keys: ["name"] });
+const input = $("#artist-search");
+const results = $("#search-results");
 
-async function search() {
-    const query = input.value;
-    results.innerHTML = "";
+// update search results as the user types
+input.keyup(() => {
+    const query = input.val().trim();
+    console.log(query);
 
-    // make sure query is at least 2 characters long
     if (query.length < 2) {
+        results.hide().empty();
         return;
     }
 
-    // search for artists matching the query
-    const matches = fuse.search(query).slice(0, 10).map(result => result.item);
+    const matches = fuse.search(query).slice(0, 5).map(r => r.item); // get top 5 matches
+    if (!matches.length) {
+        results.hide().empty();
+        return;
+    }
 
-    matches.forEach(item => {
-        const li = document.createElement("li");
-        const link = document.createElement("a");
-        link.href = `artist/${item.slug}`;
-        link.textContent = item.name;
+    const items = matches.map(item =>
+        `<li class="list-group-item list-group-item-action">
+            <a href="/artist/${item.slug}" class="text-decoration-none">${item.name}</a>
+        </li>`
+    ).join('');
 
-        li.appendChild(link);
-        results.appendChild(li);
-    });
-}
+    results.html(items).show();
+});
 
-await search();
-input.addEventListener("keyup", search);
+// show the results dropdown when the input is focused
+input.focus(() => {
+    if (results.children().length > 0) {
+        results.show();
+    }
+});
+
+// hide the results dropdown when the input loses focus
+input.blur(() => {
+    setTimeout(() => results.hide(), 100);
+})

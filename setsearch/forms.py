@@ -86,8 +86,10 @@ class ConcertForm(forms.ModelForm):
         model = Concert
         fields = ["title", "venue", "year", "month", "day"]
         widgets = {
-            "title": forms.TextInput(),
-            "year": forms.NumberInput(),
-            "month": forms.NumberInput(),
-            "day": forms.NumberInput(),
+            "title": forms.TextInput(attrs={"class": "input input-bordered w-full"}),
+            "year": forms.NumberInput(attrs={"class": "input input-bordered w-full"}),
+            "month": forms.NumberInput(attrs={"class": "input input-bordered w-full"}),
+            "day": forms.NumberInput(attrs={"class": "input input-bordered w-full"}),
+            "venue": forms.Select(attrs={"id": "venue-select"})
         }
+    

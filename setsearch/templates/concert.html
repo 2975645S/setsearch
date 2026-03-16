@@ -46,6 +46,7 @@
 {% endblock %}
 
 {% block script %}
+<!-- AJAX for comment deletion -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script>
         $(".delete-comment").click(e => {
@@ -59,5 +60,44 @@
                 }
             })
         })
-    </script>
+</script>
+<!-- AJAX for comment creation -->
+<script>
+    const form = document.getElementById("comment-form");
+    const commentsList = document.getElementById("comments-list");
+    const noComments = document.getElementById("no-comments");
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();  // stop the normal form submission
+
+        const formData = new FormData(form);
+
+        fetch("{% url 'create_comment' concert.mbid %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+            },
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) return;
+
+            // remove "no comments yet" if it exists
+            if (noComments) noComments.remove();
+
+            // build the new comment HTML
+            const div = document.createElement("div");
+            div.className = "mb-2";
+            div.innerHTML = `
+                <strong>${data.username}</strong>:
+                <small class="text-muted">${data.timestamp}</small>
+                <p>${data.content}</p>
+            `;
+
+            commentsList.appendChild(div);
+            form.reset();  // clear the form
+        });
+    });
+</script>
 {% endblock %}

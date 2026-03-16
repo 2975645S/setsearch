@@ -1,0 +1,42 @@
+{% extends "_base.html" %}
+{% block title %}SetSearch - Create Concert{% endblock %}
+{% block content %}
+    <h1 class="text-2xl font-bold mb-6">Create Concert for {{ artist.name }}</h1>
+    <form method="post" class="flex flex-col gap-4 max-w-lg">
+        {% csrf_token %}
+        <div>
+            <label class="label">Title</label>
+            {{ form.title }}
+        </div>
+        <div>
+            <label class="label">Venue</label>
+            {{ form.venue }}
+        </div>
+        <div>
+            <label class="label">Year</label>
+            {{ form.year }}
+        </div>
+        <div>
+            <label class="label">Month</label>
+            {{ form.month }}
+        </div>
+        <div>
+            <label class="label">Day</label>
+            {{ form.day }}
+        </div>
+        <div class="flex gap-2 mt-2">
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a href="{% url 'artist' artist.slug %}" class="btn btn-ghost">Cancel</a>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        new TomSelect('#venue-select', {
+            placeholder: 'Search venues...',
+        });
+    </script>
+{% endblock %}

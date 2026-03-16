@@ -1,33 +1,18 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
+from django.forms.fields import CharField, EmailField
 from django.forms.models import ModelForm
+from django.forms.widgets import PasswordInput, TextInput, NumberInput, Select
 
-from setsearch.models import User, Comment
-from setsearch.models import Comment, Concert, Venue
+from setsearch.models import Comment, Concert
+from setsearch.models import User
 
 
 class SignUpForm(ModelForm):
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={
-            "class": "input w-full",
-            "placeholder": "Username"
-        })
-    )
-
-    email = forms.EmailField(
-        widget=forms.EmailInput(attrs={
-            "class": "input w-full",
-            "placeholder": "Email"
-        })
-    )
-
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            "class": "input w-full",
-            "placeholder": "Password"
-        })
-    )
+    username = CharField()
+    email = EmailField()
+    password = CharField(widget=PasswordInput())
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -42,21 +27,8 @@ class SignUpForm(ModelForm):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(
-        label="Username",
-        widget=forms.TextInput(attrs={
-            "class": "input w-full",
-            "placeholder": "Username"
-        })
-    )
-
-    password = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(attrs={
-            "class": "input w-full",
-            "placeholder": "Password"
-        })
-    )
+    username = CharField()
+    password = CharField(widget=PasswordInput())
 
     def clean(self):
         cleaned_data = super().clean()
@@ -70,8 +42,8 @@ class LoginForm(forms.Form):
             cleaned_data["user"] = user
 
         return cleaned_data
-    
-    
+
+
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
@@ -79,17 +51,16 @@ class CommentForm(ModelForm):
         widgets = {
             "content": forms.Textarea(attrs={"rows": 3, "placeholder": "Leave a comment..."})
         }
-        
+
 
 class ConcertForm(forms.ModelForm):
     class Meta:
         model = Concert
         fields = ["title", "venue", "year", "month", "day"]
         widgets = {
-            "title": forms.TextInput(attrs={"class": "input input-bordered w-full"}),
-            "year": forms.NumberInput(attrs={"class": "input input-bordered w-full"}),
-            "month": forms.NumberInput(attrs={"class": "input input-bordered w-full"}),
-            "day": forms.NumberInput(attrs={"class": "input input-bordered w-full"}),
-            "venue": forms.Select(attrs={"id": "venue-select"})
+            "title": TextInput(attrs={"class": "input input-bordered w-full"}),
+            "year": NumberInput(attrs={"class": "input input-bordered w-full"}),
+            "month": NumberInput(attrs={"class": "input input-bordered w-full"}),
+            "day": NumberInput(attrs={"class": "input input-bordered w-full"}),
+            "venue": Select(attrs={"id": "venue-select"})
         }
-    

@@ -32,8 +32,14 @@ django==6.0.3 \
     --hash=sha256:2e5974441491ddb34c3f13d5e7a9f97b07ba03bf70234c0a9c68b79bbb235bc3 \
     --hash=sha256:90be765ee756af8a6cbd6693e56452404b5ad15294f4d5e40c0a55a0f4870fe1
     # via
+    #   django-appconf
     #   django-bootstrap5
+    #   django-select2
     #   wad-project
+django-appconf==1.2.0 \
+    --hash=sha256:15a88d60dd942d6059f467412fe4581db632ef03018a3c183fb415d6fc9e5cec \
+    --hash=sha256:b81bce5ef0ceb9d84df48dfb623a32235d941c78cc5e45dbb6947f154ea277f4
+    # via django-select2
 django-bootstrap5==26.2 \
     --hash=sha256:12331059c8230ba372ffaad990a706151e1ad8f721a870aa2e862cf6746f0d33 \
     --hash=sha256:179af37c59f4e9b1070fc650f30961c5d903c2c0ad60280ad5b63ed394f68658
@@ -41,6 +47,10 @@ django-bootstrap5==26.2 \
 django-google-fonts==0.0.3 \
     --hash=sha256:0439c4d89919970b141258bd3be0a085cc538f4e9c53e54f40eb2953ec2e5d30 \
     --hash=sha256:f8f0b943107932d5fbb66da26f2088e0c6d89cde8b66ed66c3f58a6f40d54994
+    # via wad-project
+django-select2==8.4.8 \
+    --hash=sha256:592e52effff2b5850cb7c98b265715b6704fb784699c4aedddfdd8ae1ffa1e81 \
+    --hash=sha256:a2ce6a4c556dd2d4d57eb3753618d6f31f8d3910e9d9fa1b686d9340f50b14eb
     # via wad-project
 idna==3.11 \
     --hash=sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea \

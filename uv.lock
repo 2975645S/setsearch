@@ -92,6 +92,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-appconf"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/a2/e58bec8d7941b914af52a67c35b5709eceed2caa2848f28437f1666ed668/django_appconf-1.2.0.tar.gz", hash = "sha256:15a88d60dd942d6059f467412fe4581db632ef03018a3c183fb415d6fc9e5cec", size = 16127, upload-time = "2025-11-08T15:46:27.304Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e8/e6/4c34d94dfb74bbcbc489606e61f1924933de30d22c593dd1f429f35fbd7f/django_appconf-1.2.0-py3-none-any.whl", hash = "sha256:b81bce5ef0ceb9d84df48dfb623a32235d941c78cc5e45dbb6947f154ea277f4", size = 6500, upload-time = "2025-11-08T15:46:25.957Z" },
+]
+
+[[package]]
 name = "django-bootstrap5"
 version = "26.2"
 source = { registry = "https://pypi.org/simple" }
@@ -114,6 +126,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ed/e9/a0d5a8988e0450444f69f99c94a896da5c4a0f8405ab8ab863cc377ece44/django_google_fonts-0.0.3.tar.gz", hash = "sha256:0439c4d89919970b141258bd3be0a085cc538f4e9c53e54f40eb2953ec2e5d30", size = 6878, upload-time = "2023-07-07T18:46:44.151Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/db/35/7096ffbfadbd9acf332d99de078a56a48d7632f5b8c56714aa29f3333b36/django_google_fonts-0.0.3-py3-none-any.whl", hash = "sha256:f8f0b943107932d5fbb66da26f2088e0c6d89cde8b66ed66c3f58a6f40d54994", size = 7944, upload-time = "2023-07-07T18:46:41.854Z" },
+]
+
+[[package]]
+name = "django-select2"
+version = "8.4.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "django-appconf" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2d/cc/6dc944fd0cdc53f49b532640d3d3bdf194411dc3b086b039994c2760fafd/django_select2-8.4.8.tar.gz", hash = "sha256:592e52effff2b5850cb7c98b265715b6704fb784699c4aedddfdd8ae1ffa1e81", size = 13662, upload-time = "2026-01-07T18:44:17.356Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/93/d5/e84591b966a4af1003944245d950621645cd7d2f4475c491339338849d31/django_select2-8.4.8-py3-none-any.whl", hash = "sha256:a2ce6a4c556dd2d4d57eb3753618d6f31f8d3910e9d9fa1b686d9340f50b14eb", size = 15573, upload-time = "2026-01-07T18:44:15.897Z" },
 ]
 
 [[package]]
@@ -460,6 +485,7 @@ dependencies = [
     { name = "django" },
     { name = "django-bootstrap5" },
     { name = "django-google-fonts" },
+    { name = "django-select2" },
     { name = "orjson" },
     { name = "python-dotenv" },
     { name = "zstandard" },
@@ -480,6 +506,7 @@ requires-dist = [
     { name = "django", specifier = "==6.0.3" },
     { name = "django-bootstrap5", specifier = ">=26.2" },
     { name = "django-google-fonts", specifier = "==0.0.3" },
+    { name = "django-select2", specifier = ">=8.4.8" },
     { name = "orjson", specifier = "==3.11.7" },
     { name = "python-dotenv", specifier = "==1.2.2" },
     { name = "zstandard", specifier = "==0.25.0" },

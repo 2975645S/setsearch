@@ -52,6 +52,9 @@ CSRF_COOKIE_SECURE = is_prod
 SECURE_SSL_REDIRECT = is_prod
 SESSION_COOKIE_SECURE = is_prod
 
+LOGIN_URL = "/login"
+SELECT2_THEME = "bootstrap-5"
+
 ALLOWED_HOSTS = [env("DOMAIN", "2975645s.eu.pythonanywhere.com"), "127.0.0.1", "localhost"]
 
 # Application definition
@@ -64,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_bootstrap5',
+    'django_select2',
     'setsearch'
 ]
 

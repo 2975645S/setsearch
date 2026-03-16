@@ -1,17 +1,15 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
-from django.forms.fields import CharField, EmailField
+from django.forms.fields import CharField, DateField
 from django.forms.models import ModelForm
-from django.forms.widgets import PasswordInput, TextInput, NumberInput, Select
+from django.forms.widgets import PasswordInput, DateInput
+from django_select2.forms import ModelSelect2Widget
 
-from setsearch.models import Comment, Concert
-from setsearch.models import User
+from setsearch.models import Comment, Concert, User, Artist, Venue
 
 
 class SignUpForm(ModelForm):
-    username = CharField()
-    email = EmailField()
     password = CharField(widget=PasswordInput())
 
     def save(self, commit=True):
@@ -44,23 +42,43 @@ class LoginForm(forms.Form):
         return cleaned_data
 
 
+class ArtistWidget(ModelSelect2Widget):
+    model = Artist
+    search_fields = ['name__icontains']
+
+class VenueWidget(ModelSelect2Widget):
+    model = Venue
+    search_fields = ["name__icontains", "city__icontains"]
+
+class ConcertForm(ModelForm):
+    date = DateField(required=True, widget=DateInput(attrs={"type": "date"}))
+
+    class Meta:
+        model = Concert
+        fields = ("title", "artist", "venue")
+        widgets = {
+            "artist": ArtistWidget(),
+            "venue": VenueWidget()
+        }
+
+    def save(self, commit = True):
+        concert = super().save(commit=False)
+
+        # add date
+        date = self.cleaned_data.get("date")
+        concert.year = date.year
+        concert.month = date.month
+        concert.day = date.day
+
+        if commit:
+            concert.save()
+
+        return concert
+
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
         widgets = {
             "content": forms.Textarea(attrs={"rows": 3, "placeholder": "Leave a comment..."})
-        }
-
-
-class ConcertForm(forms.ModelForm):
-    class Meta:
-        model = Concert
-        fields = ["title", "venue", "year", "month", "day"]
-        widgets = {
-            "title": TextInput(attrs={"class": "input input-bordered w-full"}),
-            "year": NumberInput(attrs={"class": "input input-bordered w-full"}),
-            "month": NumberInput(attrs={"class": "input input-bordered w-full"}),
-            "day": NumberInput(attrs={"class": "input input-bordered w-full"}),
-            "venue": Select(attrs={"id": "venue-select"})
         }

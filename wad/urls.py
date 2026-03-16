@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from setsearch.views import *
 from setsearch.views.api import *
@@ -27,7 +27,7 @@ urlpatterns = [
     # SetSearch
     path("", home_page, name="home"),
     path("artist/<str:artist_slug>", view_artist, name="artist"),
-    path("artist/<str:artist_slug>/create", create_concert, name="create_concert"),
+    path("create", create_concert, name = "create_concert"),
     path("artist/<str:artist_slug>/<str:concert_slug>", view_concert, name="concert"),
 
 
@@ -38,6 +38,9 @@ urlpatterns = [
 
     # API
     path("api/artists/list", list_artists),
-    path("api/comments/<int:comment_id>/delete", delete_comment, name="delete_comment"),
-    path("api/comments/create/<str:concert_id>", create_comment, name="create_comment"),
+    # path("api/comments/<int:comment_id>/delete", delete_comment, name="delete_comment"),
+    # path("api/comments/create/<str:concert_id>", create_comment, name="create_comment"),
+
+    # Other
+    path("select2/", include("django_select2.urls"))
 ]

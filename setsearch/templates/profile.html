@@ -1,0 +1,30 @@
+{% extends "_base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}SetSearch - Profile{% endblock %}
+
+
+{% block content %}
+    <h2>Edit your profile</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+
+        {% bootstrap_button button_type="submit" content="Submit" %}
+    </form>
+
+    <hr/>
+
+    <h2>Concerts you've attended</h2>
+    <ul>
+        {% for concert in concerts %}
+            <li>
+                <a href="{% url "concert" concert.artist.slug concert.slug %}">
+                    {{ concert.name }}
+                </a> ({{ concert.artist.name }}, {{ concert.year }})
+            </li>
+        {% empty %}
+            <p>You haven't attended any concerts yet.</p>
+        {% endfor %}
+    </ul>
+{% endblock %}

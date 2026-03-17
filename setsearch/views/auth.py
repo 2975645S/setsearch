@@ -1,11 +1,12 @@
 from typing import Callable, TypeVar
 
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
-from setsearch.forms.auth import SignUpForm, LoginForm
-from setsearch.models import User
+from setsearch.forms.auth import SignUpForm, LoginForm, ProfileForm
+from setsearch.models import User, Attendance
 
 F = TypeVar("F")
 
@@ -43,3 +44,21 @@ def logout(request: HttpRequest) -> HttpResponse:
     logout(request)
 
     return redirect(next_url or "home")
+
+@login_required
+def profile(request: HttpRequest) -> HttpResponse:
+    user = request.user
+    concerts = []
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            login(request, user)
+            return redirect("profile")
+    else:
+        attendances = Attendance.objects.filter(user=user)
+        concerts = [attendance.concert for attendance in attendances]
+        form = ProfileForm(instance=user)
+
+    return render(request, "profile.html", {"form": form, "concerts": concerts})

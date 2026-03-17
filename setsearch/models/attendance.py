@@ -1,8 +1,8 @@
-from django.contrib.auth import get_user_model
 from django.db.models import Model, ForeignKey, Index, CASCADE
 from django.db.models.fields import SmallIntegerField
 
 from setsearch.models.concert import Concert
+from setsearch.models.user import User
 
 
 class Attendance(Model):
@@ -15,7 +15,7 @@ class Attendance(Model):
         rating: The user's rating of the concert on a 5-star scale.
     """
 
-    user = ForeignKey(get_user_model(), on_delete=CASCADE)
+    user = ForeignKey(User, on_delete=CASCADE)
     concert = ForeignKey(Concert, on_delete=CASCADE)
     rating = SmallIntegerField(null=True, blank=True)
 

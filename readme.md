@@ -25,10 +25,10 @@ uv run pre-commit install
   - [x] Concerts should have an "attended?" button for authenticated users (bar the artist).
   - [x] Blank star rating on concert page. If authenticated, can click to set rating. Average rating
   displayed on concert page and artist page.
-- [X] Concert pages must have a comment box.
-- [ ] Page to modify user profile.
+- [x] Concert pages must have a comment box.
+- [x] Page to modify user profile.
 - [ ] Page to list upcoming concerts.
-- [ ] Page to list concerts the user has attended.
+- [x] Page to list concerts the user has attended.
 - [ ] Artists pages
   - [ ] Most played songs.
   - [x] List of concerts.

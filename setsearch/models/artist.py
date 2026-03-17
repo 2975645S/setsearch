@@ -1,7 +1,7 @@
-from django.contrib.auth import get_user_model
 from django.db.models import Model, OneToOneField, SET_NULL
 from django.db.models.fields import CharField, SlugField
 
+from setsearch.models.user import User
 from setsearch.models.util import unique_slug
 
 
@@ -18,7 +18,7 @@ class Artist(Model):
     mbid = CharField("MusicBrainz ID", max_length=36, unique=True, null=True, blank=True)
     name = CharField(max_length=255, db_index=True)
     slug = SlugField(blank=True)
-    user = OneToOneField(get_user_model(), on_delete=SET_NULL, null=True, blank=True)  # 1-1
+    user = OneToOneField(User, on_delete=SET_NULL, null=True, blank=True)  # 1-1
     picture = CharField(null=True, blank=True)
 
     def save(self, *args, **kwargs):

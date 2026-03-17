@@ -28,9 +28,9 @@ urlpatterns = [
     # SetSearch
     path("", home_page, name="home"),
     path("artist/<str:artist_slug>", view_artist, name="artist"),
-    path("create", create_concert, name = "create_concert"),
+    path("create", create_concert, name="create_concert"),
     path("artist/<str:artist_slug>/<str:concert_slug>", view_concert, name="concert"),
-
+    path("profile", profile, name="profile"),
 
     # Auth
     path("signup", signup_page, name="signup"),

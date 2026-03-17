@@ -1,12 +1,12 @@
 from datetime import date
 
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Model, ForeignKey, CASCADE, SET_NULL
 from django.db.models.fields import CharField, SlugField, SmallIntegerField, DateTimeField
 from django.utils import timezone
 
 from setsearch.models.artist import Artist
+from setsearch.models.user import User
 from setsearch.models.util import unique_slug
 from setsearch.models.venue import Venue
 
@@ -35,7 +35,7 @@ class Concert(Model):
     day = SmallIntegerField(null=True)
     venue = ForeignKey(Venue, on_delete=CASCADE, null=True)
     last_modified = DateTimeField(default=timezone.now)
-    modified_by = ForeignKey(get_user_model(), on_delete=SET_NULL, null=True)
+    modified_by = ForeignKey(User, on_delete=SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         if not self.name:

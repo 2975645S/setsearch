@@ -42,8 +42,6 @@ def migrate_db():
 
 def create_admin():
     """Create a default admin user if it doesn't exist."""
-    User = get_user_model()
-
     if not User.objects.filter(username="admin").exists():
         User.objects.create_superuser(
             username="admin",
@@ -118,7 +116,7 @@ def create_concerts(zstd: ZstdDecompressor):
     """Create concerts from the compressed dataset."""
     artists = Artist.objects.in_bulk(field_name="mbid")
     venues = Venue.objects.in_bulk(field_name="mbid")
-    admin = get_user_model().objects.get(username="admin")
+    admin = User.objects.get(username="admin")
 
     # insert individually to trigger slug generation
     for data in read_zst(zstd, "concerts"):

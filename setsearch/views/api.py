@@ -1,11 +1,12 @@
-from django.contrib.auth.decorators import login_required
+from http import HTTPStatus
+
+import orjson
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 
-from setsearch.forms.concert import CommentForm
-from setsearch.models import Artist, Comment
-from setsearch.models import Concert
+from setsearch.models import Artist, Concert, Comment, Attendance
 
 
 def list_artists(_: HttpRequest) -> HttpResponse:
@@ -13,35 +14,61 @@ def list_artists(_: HttpRequest) -> HttpResponse:
     artists = Artist.objects.values("name", "slug")
     return JsonResponse(list(artists), safe=False)
 
-def delete_comment(request: HttpRequest, comment_id: int) -> HttpResponse:
-    comment = Comment.objects.get(id=comment_id)
 
-    if not comment:
-        return HttpResponse(status=404)
+def comment(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponse(status=HTTPStatus.UNAUTHORIZED)
 
-    if request.user == comment.user:
-        comment.delete()
-        return HttpResponse(status=200)
-    else:
-        return HttpResponse(status=403)
+    match request.method:
+        case "POST":
+            # create comment
+            content = request.POST.get("content")
+            concert = get_object_or_404(Concert, id=request.POST.get("concert"))
+            Comment.objects.create(user=request.user, concert=concert, content=content)
+        case "DELETE":
+            data = orjson.loads(request.body)
+            comment = Comment.objects.get(id=data.get("id"))
+
+            if request.user != comment.user:
+                return HttpResponse(status=HTTPStatus.FORBIDDEN)
+
+            concert = comment.concert
+            comment.delete()
+        case _:
+            return HttpResponse(status=HTTPStatus.METHOD_NOT_ALLOWED)
+
+    # render comments
+    comments = Comment.objects.filter(concert_id=concert.id).select_related("user")
+    html = render_to_string("partials/comments.html", {"comments": comments, "request": request})
+    return JsonResponse({"html": html})
 
 
-@login_required
 @require_POST
-def create_comment(request, concert_id: str) -> JsonResponse:
-    """
-    Creates a comment for the given concert and returns the comment data as JSON.
-    """
-    concert = get_object_or_404(Concert, mbid=concert_id)
-    form = CommentForm(request.POST)
-    if form.is_valid():
-        comment = form.save(commit=False)
-        comment.user = request.user
-        comment.concert = concert
-        comment.save()
-        return JsonResponse({
-            "username": request.user.username,
-            "content": comment.content,
-            "timestamp": comment.timestamp.strftime("%d %b %Y %H:%M"),
-        })
-    return JsonResponse({"error": "Invalid form"}, status=400)
+def attend(request: HttpRequest, concert_id: int) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponse(status=HTTPStatus.UNAUTHORIZED)
+
+    concert = get_object_or_404(Concert, id=concert_id)
+    attendance, created = Attendance.objects.get_or_create(user=request.user, concert=concert)
+
+    if not created:
+        attendance.delete()
+
+    return JsonResponse({"attending": created})
+
+
+@require_POST
+def rating(request: HttpRequest, concert_id: int) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponse(status=HTTPStatus.UNAUTHORIZED)
+
+    # find attendance
+    concert = get_object_or_404(Concert, id=concert_id)
+    attendance = get_object_or_404(Attendance, user=request.user, concert=concert)
+
+    # update rating
+    rating = int(request.POST.get("rating"))
+    attendance.rating = rating
+    attendance.save()
+
+    return HttpResponse(status=HTTPStatus.OK)

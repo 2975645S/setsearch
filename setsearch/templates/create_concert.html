@@ -2,11 +2,10 @@
 {% load django_bootstrap5 %}
 
 {% block head %}
-    {{ form.media.css }}
-
-    <!-- select5 bootstrap theming -->
+    <!-- select5 bootstrap theme -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
+    {{ form.media.css }}
 {% endblock %}
 
 {% block content %}

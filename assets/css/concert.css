@@ -1,0 +1,4 @@
+#rating-area.hidden {
+    visibility: hidden;
+    pointer-events: none;
+}

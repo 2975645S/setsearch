@@ -29,7 +29,7 @@ class ConcertAdmin(ModelAdmin):
 
 @register(Attendance)
 class AttendanceAdmin(ModelAdmin):
-    ...
+    list_display = ("user", "concert")
 
 @register(Song)
 class SongAdmin(ModelAdmin):

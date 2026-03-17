@@ -1,0 +1,21 @@
+{% for comment in comments %}
+    <div class="border-bottom pb-2 mb-3">
+        <div class="d-flex justify-content-between">
+            <strong>{{ comment.user.username }}</strong>
+            <small class="text-muted">
+                {{ comment.timestamp|date:"d M Y H:i" }}
+            </small>
+        </div>
+
+        <p class="mb-1">{{ comment.content }}</p>
+
+        {% if request.user == comment.user %}
+            <button class="btn btn-sm btn-outline-danger delete-comment"
+                    data-id="{{ comment.id }}">
+                Delete
+            </button>
+        {% endif %}
+    </div>
+{% empty %}
+    <p class="text-muted" id="no-comments">No comments yet.</p>
+{% endfor %}

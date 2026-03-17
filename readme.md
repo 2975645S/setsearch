@@ -31,7 +31,7 @@ uv run pre-commit install
 - [ ] Page to list concerts the user has attended.
 - [ ] Artists pages
   - [ ] Most played songs.
-  - [ ] List of concerts.
+  - [x] List of concerts.
   - [ ] Visible only to admins, link to user account.
 
 ## Running the code

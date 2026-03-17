@@ -1,9 +1,8 @@
-from django import forms
 from django.forms import DateField, DateInput
 from django.forms.models import ModelForm
 
 from setsearch.forms import CreateModelField
-from setsearch.models import Concert, Artist, Venue, Comment
+from setsearch.models import Concert, Artist, Venue
 
 
 class ConcertForm(ModelForm):
@@ -30,11 +29,3 @@ class ConcertForm(ModelForm):
     class Meta:
         model = Concert
         fields = ("name", "artist", "venue")
-
-class CommentForm(ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['content']
-        widgets = {
-            "content": forms.Textarea(attrs={"rows": 3, "placeholder": "Leave a comment..."})
-        }

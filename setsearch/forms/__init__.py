@@ -20,12 +20,11 @@ class CreateModelField(CharField):
             return None
 
         # existing object (id)
-        if value.isdigit():
-            try:
-                print(self._model.objects.get(**{self._pk: int(value)}))
-                return self._model.objects.get(**{self._pk: int(value)})
-            except self._model.DoesNotExist:
-                pass
+        try:
+            obj = self._model.objects.get(**{self._pk: value})
+            return obj
+        except (self._model.DoesNotExist, ValueError):
+            pass
 
         # new object (name)
         obj, _ = self._model.objects.get_or_create(**{self._input_field: value})

@@ -1,0 +1,141 @@
+{% extends "_base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+    SetSearch - {{ concert.artist.name }} @ {{ concert.venue.name }}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/concert.css" %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <!-- concert header -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+
+                <h2 class="card-title mb-1">
+                    {{ concert.artist.name }} @ {{ concert.venue.name }}
+                </h2>
+
+                <p class="text-muted mb-2">
+                    {{ date|date:"F j, Y" }}
+                </p>
+
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <!-- buttons -->
+                    {% if request.user.is_authenticated %}
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm">Edit</a>
+
+                            <!-- attendance -->
+                            <button class="btn {% if rating is None %}btn-outline-success{% else %}btn-success{% endif %} btn-sm"
+                                    id="attend-button"
+                                    data-concert="{{ concert.id }}">
+                                {% if rating is None %}
+                                    Not attended
+                                {% else %}
+                                    Attended
+                                {% endif %}
+                            </button>
+
+                            <div id="rating-area" {% if rating is None %}class="hidden"{% endif %}>
+                                <div id="star-rating" style="font-size: 1.5rem; color: #ffc107;">
+                                    {% for i in "12345" %}
+                                        <span class="bi bi-star" data-value="{{ forloop.counter }}"></span>
+                                    {% endfor %}
+                                </div>
+                                <input type="hidden" id="rating" value="{{ rating }}">
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- attendees -->
+                    <div class="text-muted" id="attendance-count">
+                        {{ attendees|intcomma }} attendee{{ attendees|pluralize }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- setlist -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h4 class="mb-3">Setlist</h4>
+
+                        {% if setlist %}
+                            <ol class="list-group list-group-numbered">
+                                {% for entry in setlist %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ entry.song.title }}</strong>
+                                            <div class="text-muted small">
+                                                {{ entry.song.artist.name }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                        {% else %}
+                            <p class="text-muted">No setlist available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- comments -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h4 class="mb-3">Comments</h4>
+
+                        <div id="comments-list" data-concert="{{ concert.id }}">
+                            {% include "partials/comments.html" %}
+                        </div>
+
+                        <hr/>
+
+                        {% if request.user.is_authenticated %}
+                            {% csrf_token %}
+
+                            <div class="form-floating mb-3">
+                                <textarea
+                                        class="form-control"
+                                        id="comment-box"
+                                        placeholder="Write a comment..."
+                                        style="height: 140px; resize: vertical;"
+                                        required
+                                ></textarea>
+                                <label for="comment-box">Write a comment...</label>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" id="post-comment" class="btn btn-primary px-4">
+                                    Post
+                                </button>
+                            </div>
+                        {% else %}
+                            <p class="mt-3">
+                                <a href="{% url 'login' %}?next={{ request.path }}">
+                                    Log in
+                                </a> to leave a comment.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {% if request.user.is_authenticated %}
+        <script type="module" src="{% static "js/comments.esm.js" %}"></script>
+        <script type="module" src="{% static "js/attendance.esm.js" %}"></script>
+    {% endif %}
+{% endblock %}

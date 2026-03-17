@@ -3,7 +3,7 @@ from typing import TypeVar
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, FloatField, \
+from django.db.models import CharField, Model, OneToOneField, SET_NULL, ForeignKey, CASCADE, \
     SmallIntegerField, DateTimeField, URLField, Index
 from django.db.models.fields import SlugField
 from django.utils import timezone
@@ -148,7 +148,7 @@ class Attendance(Model):
 
     user = ForeignKey(User, on_delete=CASCADE)
     concert = ForeignKey(Concert, on_delete=CASCADE)
-    rating = FloatField(null=True, blank=True)
+    rating = SmallIntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "attendance"

@@ -39,6 +39,9 @@ urlpatterns = [
 
     # API
     path("api/artists/list", list_artists),
+    path("api/comment", comment),
+    path("api/attend/<int:concert_id>", attend),
+    path("api/rating/<int:concert_id>", rating),
 
     # AJAX
     path("select2/", include("django_select2.urls"))

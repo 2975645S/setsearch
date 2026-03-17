@@ -22,8 +22,8 @@ uv run pre-commit install
   - [ ] If the artist edits the concert, make it read-only to anyone who is not superuser or the artist. Display "verified" badge.
   - [ ] Add songs to setlist, let user reorder them
     - Starts with empty setlist.
-  - [ ] Concerts should have an "attended?" button for authenticated users (bar the artist).
-  - [ ] Blank star rating on concert page. If authenticated, can click to set rating. Average rating
+  - [x] Concerts should have an "attended?" button for authenticated users (bar the artist).
+  - [x] Blank star rating on concert page. If authenticated, can click to set rating. Average rating
   displayed on concert page and artist page.
 - [X] Concert pages must have a comment box.
 - [ ] Page to modify user profile.

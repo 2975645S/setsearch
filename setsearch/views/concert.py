@@ -42,7 +42,5 @@ def view_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> H
         except Attendance.DoesNotExist:
             pass
 
-    print(rating)
-
     return render(request, "concert.html",
                   {"concert": concert, "comments": comments, "setlist": setlist, "attendees": attendees, "rating": rating})

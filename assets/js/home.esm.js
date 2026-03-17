@@ -10,7 +10,6 @@ const results = $("#search-results");
 // update search results as the user types
 input.keyup(() => {
     const query = input.val().trim();
-    console.log(query);
 
     if (query.length < 2) {
         results.hide().empty();

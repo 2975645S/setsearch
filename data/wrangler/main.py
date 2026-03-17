@@ -17,6 +17,9 @@ from data.wrangler.events import load_events
 from data.wrangler.songs import load_songs
 from data.wrangler.util import get_http
 
+# from io import TextIOWrapper
+# from zstandard import ZstdDecompressor
+
 COMPRESSION_LEVEL = 19
 
 DATA_DIR = Path(__file__).resolve().parent.parent
@@ -49,13 +52,8 @@ if __name__ == "__main__":
 
     write(zstd, "songs", songs)
 
-    # venues, concerts, and setlist entries
-    concerts, venues, entries = load_events(DATA_DIR / "download" / "event", song_ids, artist_ids)
-    write(zstd, "concerts", concerts)
-    write(zstd, "venues", venues)
-    write(zstd, "setlist", entries)
-
     # artist_ids = set()
+    # song_ids = {}
     # dctx = ZstdDecompressor()
     #
     # with open(DATA_DIR / "artists.ndjson.zst", "rb") as f, dctx.stream_reader(f) as reader:
@@ -72,3 +70,9 @@ if __name__ == "__main__":
     #         name = song.get("title")
     #
     #         song_ids[(artist_id, name)] = song_id
+
+    # venues, concerts, and setlist entries
+    concerts, venues, entries = load_events(DATA_DIR / "download" / "event", song_ids, artist_ids)
+    write(zstd, "concerts", concerts)
+    write(zstd, "venues", venues)
+    write(zstd, "setlist", entries)

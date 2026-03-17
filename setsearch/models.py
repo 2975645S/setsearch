@@ -1,3 +1,4 @@
+from datetime import date
 from typing import TypeVar
 
 from django.contrib.auth import get_user_model
@@ -121,6 +122,9 @@ class Concert(Model):
             self.slug = unique_slug(self, "slug", self.name)
 
         super().save(*args, **kwargs)
+
+    def date(self) -> date:
+        return date(self.year, self.month, self.day)
 
     def clean(self):
         if self.day and not self.month:

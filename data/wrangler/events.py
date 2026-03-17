@@ -28,7 +28,7 @@ class Venue:
 class Concert:
     mbid: str
     artist: str
-    title: str
+    name: str
     year: int
     month: int
     day: int
@@ -143,6 +143,9 @@ def load_events(path: Path, songs: dict[tuple[str, str], str], artist_ids: set[s
                 mbid = event.get("id")
                 title = event.get("name")
                 date = event.get("life-span", {}).get("begin")
+                if not date:
+                    continue
+
                 year, month, day = split_iso_loose(date)
 
                 entries.extend(parse_setlist(songs, artist_id, mbid, event.get("setlist")))
@@ -152,7 +155,7 @@ def load_events(path: Path, songs: dict[tuple[str, str], str], artist_ids: set[s
                     venue_id = venue.mbid
                     venues.add(venue)
 
-                concert = Concert(mbid=mbid, artist=artist_id, title=title, year=year, month=month, day=day,
+                concert = Concert(mbid=mbid, artist=artist_id, name=title, year=year, month=month, day=day,
                                   venue=venue_id)
                 concerts.append(concert)
 

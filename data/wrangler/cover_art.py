@@ -51,6 +51,7 @@ def fetch_all_covers(http: Session, refs: list[CoverArtRef]) -> dict[str, str | 
 
             for ref in rrefs:
                 covers[ref.song] = image
+                processed += 1
 
             if i % PROGRESS_INTERVAL == 0:
                 logger.info(f"Fetched covers for {processed}/{len(release_map)} releases")

@@ -1,4 +1,5 @@
-from django.contrib.admin import ModelAdmin, register, display
+from django.contrib.admin import register, display
+from unfold.admin import ModelAdmin
 
 from setsearch.models import *
 

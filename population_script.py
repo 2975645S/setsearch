@@ -127,7 +127,7 @@ def create_concerts(zstd: ZstdDecompressor):
         if not artist or not venue:
             continue
 
-        concert = Concert(mbid=data["mbid"], artist=artist, name=data["title"], year=data["year"], month=data["month"],
+        concert = Concert(mbid=data["mbid"], artist=artist, name=data["name"], year=data["year"], month=data["month"],
                           day=data["day"],
                           venue=venue, modified_by=admin)
         concert.save()

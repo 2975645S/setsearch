@@ -18,11 +18,14 @@
             <div class="card-body">
 
                 <h2 class="card-title mb-1">
-                    {{ concert.artist.name }} @ {{ concert.venue.name }}
+                    {{ concert.name }}
                 </h2>
 
                 <p class="text-muted mb-2">
-                    {{ date|date:"F j, Y" }}
+                    {% if concert.venue %}
+                        {{ concert.venue.name }} &middot;
+                    {% endif %}
+                    {{ concert.date|date:"F j, Y" }}
                 </p>
 
                 <div class="d-flex align-items-center justify-content-between mt-2">

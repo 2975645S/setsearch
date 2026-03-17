@@ -68,8 +68,6 @@ python manage.py runserver
 
 ### Data
 
-
-
 The following datasets were processed to build the population data:
 
 - The following datasets were provided by [MusicBrainz](https://musicbrainz.org/) under the
@@ -86,7 +84,26 @@ The following datasets were processed to build the population data:
 
 SetSearch uses:
 
+**Python**
+
 - [django v6.0.3](https://www.djangoproject.com/)
+- [django-bootstrap5 v26.2](https://github.com/zostera/django-bootstrap5)
+- [django-select2 v8.4.8](https://django-select2.readthedocs.io/en/stable/)
+- [django-unfold v0.85.0](https://unfoldadmin.com/)
 - [orjson v3.11.7](https://github.com/ijl/orjson)
 - [python-dotenv v1.2.2](https://github.com/theskumar/python-dotenv)
 - [zstandard v0.25.0](https://python-zstandard.readthedocs.io/en/latest/)
+
+**JavaScript**
+
+- [Bootstrap v5.3.3](https://getbootstrap.com/)
+- [jQuery v3.7.1 and v4.0.0](https://jquery.com/)
+  - v3 is only used for select2 compatibility.
+- [Select2 v4.0.13](https://select2.org/)
+- [Fuse v7.1.0](https://fusejs.io/)
+
+**CSS**
+
+- [Bootstrap v5.3.3](https://getbootstrap.com/)
+- [Bootstrap Icons v1.13.1](https://icons.getbootstrap.com/)
+- [Select2 Bootstrap5 Theme v1.3.0](https://apalfrey.github.io/select2-bootstrap-5-theme/)

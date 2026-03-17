@@ -9,7 +9,7 @@ from requests import Session
 
 from data.wrangler.util import get_logger
 
-ARTISTS_TO_KEEP = 50
+ARTISTS_TO_KEEP = 100
 MAX_WORKERS = 8 # fewer than 10 concurrent, below 20 average per second
 PROGRESS_INTERVAL = 1000
 

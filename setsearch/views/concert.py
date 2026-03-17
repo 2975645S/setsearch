@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -47,5 +45,4 @@ def view_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> H
     print(rating)
 
     return render(request, "concert.html",
-                  {"concert": concert, "comments": comments, "setlist": setlist, "attendees": attendees, "rating": rating,
-                   "date": date(concert.year, concert.month, concert.day)})
+                  {"concert": concert, "comments": comments, "setlist": setlist, "attendees": attendees, "rating": rating})

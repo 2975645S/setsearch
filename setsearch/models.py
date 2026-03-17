@@ -12,6 +12,7 @@ from django.utils.text import slugify
 M = TypeVar("M", bound=Model)
 User = get_user_model()
 
+
 def unique_slug(instance: M, field: str, value: str) -> str:
     slug = slugify(value)
     unique = slug
@@ -25,6 +26,7 @@ def unique_slug(instance: M, field: str, value: str) -> str:
 
     return unique
 
+
 class Artist(Model):
     """
     Attributes:
@@ -35,7 +37,7 @@ class Artist(Model):
         picture: WikiMedia artist picture filename. Prepend: https://commons.wikimedia.org/wiki/Special:FilePath/
     """
 
-    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
+    mbid = CharField("MusicBrainz ID", max_length=36, unique=True, null=True, blank=True)
     name = CharField(max_length=255, db_index=True)
     slug = SlugField(blank=True)
     user = OneToOneField(User, on_delete=SET_NULL, null=True, blank=True)  # 1-1
@@ -59,7 +61,7 @@ class Venue(Model):
         address: The venue's address.
     """
 
-    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
+    mbid = CharField("MusicBrainz ID", max_length=36, unique=True, null=True, blank=True)
     name = CharField(max_length=255)
     city = CharField(max_length=255, null=True)
     address = CharField(max_length=255, null=True)
@@ -67,12 +69,13 @@ class Venue(Model):
     def __str__(self):
         return f"{self.name}, {self.city}"
 
+
 class Concert(Model):
     """
     Attributes:
         mbid: The concert's MusicBrainz ID.
         artist: The artist who performed the concert.
-        title: The concert's title.
+        name: The concert's title.
         slug: A URL-friendly version of the concert's title.
         year: The year the concert took place.
         month: The month the concert took place.
@@ -82,9 +85,9 @@ class Concert(Model):
         modified_by: The SetSearch user who most recently modified the concert.
     """
 
-    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
+    mbid = CharField("MusicBrainz ID", max_length=36, unique=True, null=True, blank=True)
     artist = ForeignKey(Artist, on_delete=CASCADE, db_index=True)  # 1-N
-    title = CharField(max_length=255, blank=True)
+    name = CharField(max_length=255, blank=True)
     slug = SlugField(blank=True)
     year = SmallIntegerField()
     month = SmallIntegerField(null=True)
@@ -94,7 +97,7 @@ class Concert(Model):
     modified_by = ForeignKey(User, on_delete=SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
-        if not self.title:
+        if not self.name:
             parts = [self.artist.name]
 
             if self.venue and self.venue.name:
@@ -112,10 +115,10 @@ class Concert(Model):
             if date_parts:
                 parts.append("on " + "-".join(date_parts))
 
-            self.title = " ".join(parts)
+            self.name = " ".join(parts)
 
         if not self.slug:
-            self.slug = unique_slug(self, "slug", self.title)
+            self.slug = unique_slug(self, "slug", self.name)
 
         super().save(*args, **kwargs)
 
@@ -130,7 +133,7 @@ class Concert(Model):
             raise ValidationError("Day must be between 1 and 31.")
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Attendance(Model):
@@ -165,7 +168,7 @@ class Song(Model):
         picture: Cover art for the song.
     """
 
-    mbid = CharField("MusicBrainz ID", max_length=36, primary_key=True)
+    mbid = CharField("MusicBrainz ID", max_length=36, unique=True, blank=True)
     title = CharField(max_length=255, db_index=True)
     artist = ForeignKey(Artist, on_delete=CASCADE)  # 1-N
     picture = URLField(null=True, blank=True)

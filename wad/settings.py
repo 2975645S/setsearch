@@ -5,20 +5,20 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
-from typing import Generic, Callable, Optional
+from typing import Callable, Optional, TypeVar
 
 # === UTILITIES ===
-T = Generic()
+T = TypeVar("T")
 is_prod = "PROD" in os.environ
 
 
-def env(key: str, default: Optional[T] = None, cast: Optional[Callable[[str], T]] = None) -> T:
+def env(key: str, default: Optional[T] = None) -> T:
     """
     Get an environment variable and optionally cast it.
 
     Args:
         key: Name of the environment variable.
-        cast: Optional callable to convert the string value.
+        default: Default value if the environment variable is not set. If None, an error will be raised.
 
     Returns:
         The environment value, cast if specified, or None if not set.
@@ -30,10 +30,6 @@ def env(key: str, default: Optional[T] = None, cast: Optional[Callable[[str], T]
         if default is None:
             raise ValueError(f"The environment variable `{key}` was not set, but is required.")
         value = default
-
-    # optionally cast the variable
-    if cast:
-        return cast(value)
 
     return value
 
@@ -100,7 +96,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wad.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
@@ -110,7 +105,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -130,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -142,11 +135,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "static"
 STATICFILES_DIRS = [ASSETS_DIR]
-

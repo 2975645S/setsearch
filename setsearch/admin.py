@@ -13,7 +13,7 @@ class Venue(ModelAdmin):
 
 @register(Concert)
 class ConcertAdmin(ModelAdmin):
-    list_display = ("title", "artist", "venue", "date")
+    list_display = ("name", "artist", "venue", "date")
 
     @display
     def date(self, obj):

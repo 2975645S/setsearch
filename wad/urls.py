@@ -20,6 +20,7 @@ from django.urls import path, include
 from setsearch.views import *
 from setsearch.views.api import *
 from setsearch.views.auth import *
+from setsearch.views.concert import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,9 +39,7 @@ urlpatterns = [
 
     # API
     path("api/artists/list", list_artists),
-    # path("api/comments/<int:comment_id>/delete", delete_comment, name="delete_comment"),
-    # path("api/comments/create/<str:concert_id>", create_comment, name="create_comment"),
 
-    # Other
+    # AJAX
     path("select2/", include("django_select2.urls"))
 ]

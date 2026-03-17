@@ -94,7 +94,7 @@ def create_songs(zstd: ZstdDecompressor):
             Song(
                 mbid=data["mbid"],
                 title=data["title"],
-                artist_id=artist.mbid,
+                artist=artist,
                 picture=data["picture"]
             )
         )
@@ -127,7 +127,7 @@ def create_concerts(zstd: ZstdDecompressor):
         if not artist or not venue:
             continue
 
-        concert = Concert(mbid=data["mbid"], artist=artist, title=data["title"], year=data["year"], month=data["month"],
+        concert = Concert(mbid=data["mbid"], artist=artist, name=data["title"], year=data["year"], month=data["month"],
                           day=data["day"],
                           venue=venue, modified_by=admin)
         concert.save()

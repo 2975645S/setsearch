@@ -1,11 +1,11 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
-
-from setsearch.models import Artist, Comment
-from setsearch.models import Concert, Venue, Song, SetlistEntry
-from setsearch.forms import CommentForm
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_POST
+
+from setsearch.forms.concert import CommentForm
+from setsearch.models import Artist, Comment
+from setsearch.models import Concert
 
 
 def list_artists(_: HttpRequest) -> HttpResponse:

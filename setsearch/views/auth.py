@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
-from setsearch.forms import SignUpForm, LoginForm
+from setsearch.forms.auth import SignUpForm, LoginForm
 from setsearch.models import User
 
 F = TypeVar("F")

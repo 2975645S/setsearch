@@ -18,9 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 from setsearch.views import *
-from setsearch.views.api import *
-from setsearch.views.auth import *
-from setsearch.views.concert import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +36,7 @@ urlpatterns = [
 
     # API
     path("api/artists/list", list_artists),
+    path("api/artist/<str:artist_slug>/link", link_artist),
     path("api/comment", comment),
     path("api/attend/<int:concert_id>", attend),
     path("api/rating/<int:concert_id>", rating),

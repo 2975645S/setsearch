@@ -32,7 +32,7 @@ uv run pre-commit install
 - [ ] Artists pages
   - [ ] Most played songs.
   - [x] List of concerts.
-  - [ ] Visible only to admins, link to user account.
+  - [x] Visible only to admins, link to user account.
 
 ## Running the code
 

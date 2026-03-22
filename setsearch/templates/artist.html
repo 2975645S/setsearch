@@ -1,4 +1,13 @@
 {% extends "_base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block head %}
+    <!-- select5 bootstrap theme -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
+    {{ form.media.css }}
+{% endblock %}
 
 {% block title %}SetSearch - {{ artist.name }}{% endblock %}
 
@@ -28,9 +37,18 @@
                            class="btn btn-primary btn-sm">
                             + Add Concert
                         </a>
+
+                        <!-- link to user -->
+                        {% if request.user.is_superuser %}
+                            <form class="row">
+                                <span id="artist-slug" data-slug="{{ artist.slug }}"></span>
+                                {% csrf_token %}
+                                {% bootstrap_form form layout="horizontal" wrapper_class="col" %}
+                                {% bootstrap_button type="reset" content="Clear" button_class="btn-danger" extra_classes="col-auto" %}
+                            </form>
+                        {% endif %}
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -71,7 +89,6 @@
                                         View details
                                     </a>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -85,6 +102,12 @@
                 </a>
             </div>
         {% endif %}
-
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- select5 needs jQuery 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    {{ form.media.js }}
+    <script src="{% static "js/linkUser.js" %}"></script>
 {% endblock %}

@@ -16,7 +16,6 @@
         <!-- artist -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="row g-0 align-items-center">
-
                 {% if artist.picture %}
                     <div class="col-md-3 text-center p-3">
                         <img src="https://commons.wikimedia.org/wiki/Special:FilePath/{{ artist.picture }}"
@@ -28,7 +27,14 @@
 
                 <div class="col-md">
                     <div class="card-body">
-                        <h1 class="card-title mb-1">{{ artist.name }}</h1>
+                        <h1 class="card-title mb-1 fw-bold">
+                            {{ artist.name }}
+                            {% if artist.user %}
+                                <span class="badge bg-success ms-2">
+                                    <i class="bi bi-check-circle-fill"></i> Linked
+                                </span>
+                            {% endif %}
+                        </h1>
                         <p class="text-muted mb-2">
                             {{ concerts|length }} concert{{ concerts|length|pluralize }}
                         </p>
@@ -37,18 +43,21 @@
                            class="btn btn-primary btn-sm">
                             + Add Concert
                         </a>
-
-                        <!-- link to user -->
-                        {% if request.user.is_superuser %}
-                            <form class="row">
-                                <span id="artist-slug" data-slug="{{ artist.slug }}"></span>
-                                {% csrf_token %}
-                                {% bootstrap_form form layout="horizontal" wrapper_class="col" %}
-                                {% bootstrap_button type="reset" content="Clear" button_class="btn-danger" extra_classes="col-auto" %}
-                            </form>
-                        {% endif %}
                     </div>
                 </div>
+            </div>
+            <div class="card-body">
+                <!-- link to user -->
+                {% if request.user.is_superuser %}
+                    <hr/>
+                    <h4>Admin Tools</h4>
+                    <form class="row">
+                        <span id="artist-slug" data-slug="{{ artist.slug }}"></span>
+                        {% csrf_token %}
+                        {% bootstrap_form form layout="horizontal" wrapper_class="col" %}
+                        {% bootstrap_button type="reset" content="Clear" button_class="btn-danger" extra_classes="col-auto" %}
+                    </form>
+                {% endif %}
             </div>
         </div>
 

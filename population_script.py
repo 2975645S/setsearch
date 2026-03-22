@@ -14,6 +14,7 @@ from zstandard import ZstdDecompressor
 BATCH_SIZE = 100_000
 GENRES_N = 100
 DATA_DIR = BASE_DIR = Path(__file__).resolve().parent / "data"
+PASSWORD = os.environ.get("PASSWORD", "password123")
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 logger = logging.getLogger()
@@ -45,10 +46,10 @@ def create_admin():
     if not User.objects.filter(username="admin").exists():
         User.objects.create_superuser(
             username="admin",
-            email="admin@example.com",
-            password="password123",
+            email="admin@setsearch.com",
+            password=PASSWORD,
         )
-        logger.info("Admin user created: username=admin, password=password123")
+        logger.info(f"Admin user created: username=admin, password={PASSWORD}")
     else:
         logger.info("Admin user already exists, skipping creation.")
 
@@ -68,12 +69,30 @@ def bulk_create(objects: list[Model]):
     logger.info(f"{clazz.__name__}s created successfully.")
 
 
+def create_artist_user(artist):
+    # create user
+    user = User.objects.create_user(
+        username=artist.slug,
+        email=f"{artist.slug}@setsearch.com",
+        password=PASSWORD
+    )
+
+    # link artist to user
+    artist.user = user
+    artist.save()
+
+    return artist
+
 def create_artists(zstd: ZstdDecompressor):
     """Create artists from the compressed dataset."""
     # insert individually to trigger slug generation
     for data in read_zst(zstd, "artists"):
+        # create artist
         artist = Artist(mbid=data["mbid"], name=data["name"], picture=data["picture"])
-        logger.debug(f"Creating artist: {artist.name} ({artist.mbid})")
+        artist.save()
+
+        # link to user
+        artist.user = User.objects.create_user(username=artist.slug, email=f"{artist.slug}@setsearch.com", password=PASSWORD)
         artist.save()
     logger.info("Artists created successfully.")
 
@@ -148,7 +167,6 @@ def create_entries(zstd: ZstdDecompressor):
         )
 
     bulk_create(entries)
-
 
 if __name__ == "__main__":
     setup_django()

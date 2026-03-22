@@ -9,7 +9,7 @@ class LinkToUserForm(Form):
     username = ModelChoiceField(queryset=User.objects.all(),
                                 widget=ModelSelect2Widget(model=User, search_fields=["username__icontains"],
                                                           attrs={"data-minimum-input-length": 0, "data-placeholder": "N/A"}),
-                                label="Link to user")
+                                label="Link to User")
 
     def __init__(self, artist: Artist, *args, **kwargs):
         super().__init__(*args, **kwargs)

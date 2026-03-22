@@ -1,0 +1,38 @@
+{% extends "_base.html" %}
+
+{% block title %}SetSearch - Upcoming Concerts{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <h1 class="mb-4">Upcoming Concerts</h1>
+
+        {% if concerts %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for concert in concerts %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">
+                                    <a class="text-decoration-none fw-semibold text-primary"
+                                       href="{% url "artist" concert.artist.slug %}">{{ concert.artist.name }}</a>
+                                </h5>
+
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    {% if concert.venue %}{{ concert.venue.name }}, {% endif %}
+                                    {{ concert.date|date:"d-m-Y" }}
+                                </h6>
+
+                                <p class="card-text mt-2">{{ concert.name }}</p>
+
+                                <a href="{% url 'concert' concert.artist.slug concert.slug %}"
+                                   class="mt-auto btn btn-primary">View concert</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">No upcoming concerts found.</div>
+        {% endif %}
+    </div>
+{% endblock %}

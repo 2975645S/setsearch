@@ -28,6 +28,7 @@ urlpatterns = [
     path("create", create_concert, name="create_concert"),
     path("artist/<str:artist_slug>/<str:concert_slug>", view_concert, name="concert"),
     path("profile", profile, name="profile"),
+    path("upcoming", upcoming_concerts, name="upcoming"),
 
     # Auth
     path("signup", signup_page, name="signup"),

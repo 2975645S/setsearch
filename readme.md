@@ -27,7 +27,7 @@ uv run pre-commit install
   displayed on concert page and artist page.
 - [x] Concert pages must have a comment box.
 - [x] Page to modify user profile.
-- [ ] Page to list upcoming concerts.
+- [x] Page to list upcoming concerts.
 - [x] Page to list concerts the user has attended.
 - [ ] Artists pages
   - [ ] Most played songs.

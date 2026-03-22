@@ -31,6 +31,7 @@
             <!-- main links -->
             <div class="navbar-nav">
                 {% nav_link "home" "Home" %}
+                {% nav_link "upcoming" "Upcoming" %}
                 {% if request.user.is_authenticated %}
                     {% nav_link "create_concert" "Create concert" %}
                 {% endif %}

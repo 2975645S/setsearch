@@ -29,7 +29,7 @@ def comment(request: HttpRequest) -> HttpResponse:
             data = orjson.loads(request.body)
             comment = Comment.objects.get(id=data.get("id"))
 
-            if request.user != comment.user:
+            if request.user != comment.user and not request.user.is_superuser:
                 return HttpResponse(status=HTTPStatus.FORBIDDEN)
 
             concert = comment.concert

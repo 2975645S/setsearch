@@ -21,7 +21,7 @@ logger = logging.getLogger()
 
 
 def setup_django():
-    dotenv.load_dotenv()
+    dotenv.load_dotenv(os.path.join(BASE_DIR / ".env"))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wad.settings")
     django.setup()
 
@@ -188,3 +188,6 @@ if __name__ == "__main__":
     create_venues(zstd)
     create_concerts(zstd)
     create_entries(zstd)
+
+    logger.info("================================================")
+    logger.info(f"The password for all created users is \"{PASSWORD}\".")

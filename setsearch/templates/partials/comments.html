@@ -9,7 +9,7 @@
 
         <p class="mb-1">{{ comment.content }}</p>
 
-        {% if request.user == comment.user %}
+        {% if request.user == comment.user or request.user.is_superuser %}
             <button class="btn btn-sm btn-outline-danger delete-comment"
                     data-id="{{ comment.id }}">
                 Delete

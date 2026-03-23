@@ -16,14 +16,16 @@
     <hr/>
 
     <h2>Concerts you've attended</h2>
-    <ul>
-        {% for concert in concerts %}
-            <li>
-                <a href="{% url "concert" concert.artist.slug concert.slug %}">{{ concert.name }}</a>
-                ({{ concert.artist.name }}, {{ concert.year }})
-            </li>
-        {% empty %}
-            <p>You haven't attended any concerts yet.</p>
-        {% endfor %}
-    </ul>
+    {% if concerts %}
+        <ul>
+            {% for concert in concerts %}
+                <li>
+                    <a href="{% url "concert" concert.artist.slug concert.slug %}">{{ concert.name }}</a>
+                    ({{ concert.artist.name }}, {{ concert.year }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">You haven't attended any concerts yet.</p>
+    {% endif %}
 {% endblock %}

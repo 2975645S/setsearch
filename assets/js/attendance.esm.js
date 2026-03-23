@@ -20,7 +20,7 @@ attendButton.click(function () {
             csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
         },
         success: res => {
-            ratingArea.toggleClass("hidden");
+            ratingArea.toggleClass("d-none");
             attendButton.toggleClass("btn-success");
             attendButton.toggleClass("btn-outline-success");
             let attending = parseInt(attendanceCount.text());
@@ -31,6 +31,8 @@ attendButton.click(function () {
             } else {
                 attending -= 1;
                 attendButton.text("Not attended");
+                rating.val(0);
+                highlightStars(rating.val());
             }
 
             attendanceCount.text(pluralize(attending, 'attendee'));

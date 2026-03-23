@@ -7,34 +7,39 @@
 {% endblock %}
 
 {% block head %}
-    <!-- select5 bootstrap theme -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/forms.css" %}"/>
     {{ edit_form.media.css }}
 {% endblock %}
 
 {% block content %}
-    {% csrf_token %}
+    <div class="container py-4">
+        <div class="mx-auto form-container">
+            {% csrf_token %}
 
-    <h2>Editing {{ concert.artist.name }} @ {{ concert.venue.name }} on {{ concert.date }}</h2>
-    {% bootstrap_form edit_form %}
+            <h2>Editing {{ concert.artist.name }} @ {{ concert.venue.name }} on {{ concert.date }}</h2>
+            {% bootstrap_form edit_form %}
 
-    <hr/>
+            <hr/>
 
-    <h2>Edit Setlist</h2>
+            <h2>Edit Setlist</h2>
 
-    {% bootstrap_form setlist_form %}
+            {% bootstrap_form setlist_form %}
 
-    <ol class="list-group list-group-numbered mb-4" id="setlist">
-        {% for entry in setlist %}
-            <li class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ entry.song_id }}">
-                <strong class="me-3">{{ entry.song.title }}</strong>
-                <button class="btn btn-sm btn-danger remove-song">Delete</button>
-            </li>
-        {% endfor %}
-    </ol>
+            <ol class="list-group list-group-numbered mb-4" id="setlist">
+                {% for entry in setlist %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        data-id="{{ entry.song_id }}">
+                        <strong class="me-3">{{ entry.song.title }}</strong>
+                        <button class="btn btn-sm btn-danger remove-song">Delete</button>
+                    </li>
+                {% endfor %}
+            </ol>
 
-    {% bootstrap_button button_type="submit" content="Update concert" id="update-button" data_concert=concert.id %}
+            {% bootstrap_button button_type="submit" content="Update concert" id="update-button" data_concert=concert.id %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block scripts %}

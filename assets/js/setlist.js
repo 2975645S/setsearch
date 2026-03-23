@@ -1,4 +1,5 @@
 // jquery 3 and sortablejs are already included
+
 const setlist = $("#setlist");
 
 setlist.sortable({
@@ -40,7 +41,6 @@ setlist.on("click", ".remove-song", function () {
 
 // submitting
 const updateButton = $("#update-button");
-const info = $("#info");
 const nameInput = $("#id_name");
 const venueInput = $("#id_venue");
 const dateInput = $("#id_date");

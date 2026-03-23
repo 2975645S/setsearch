@@ -68,8 +68,6 @@ python manage.py runserver
 
 ### Data
 
-The following datasets were processed to build the population data:
-
 - The following datasets were provided by [MusicBrainz](https://musicbrainz.org/) under the
   [CC0 1.0 Universal License](https://creativecommons.org/publicdomain/zero/1.0/).
     - [artist](https://data.metabrainz.org/pub/musicbrainz/data/json-dumps/20260304-001001/artist.tar.xz) dataset (~15.3GB)
@@ -87,23 +85,25 @@ SetSearch uses:
 **Python**
 
 - [django v6.0.3](https://www.djangoproject.com/)
-- [django-bootstrap5 v26.2](https://github.com/zostera/django-bootstrap5)
-- [django-select2 v8.4.8](https://django-select2.readthedocs.io/en/stable/)
-- [django-unfold v0.85.0](https://unfoldadmin.com/)
+- [django-bootstrap5 v26.2](https://django-bootstrap5.readthedocs.io/en/latest/)
+- [django-select2 v8.4.8](https://django-select2.readthedocs.io/en/8.4.8/)
+- [django-unfold v0.86.1](https://github.com/unfoldadmin/django-unfold)
 - [orjson v3.11.7](https://github.com/ijl/orjson)
-- [python-dotenv v1.2.2](https://github.com/theskumar/python-dotenv)
-- [zstandard v0.25.0](https://python-zstandard.readthedocs.io/en/latest/)
+- [python-dotenv v1.2.2](https://saurabh-kumar.com/python-dotenv/)
+- [zstandard v0.25.0](https://python-zstandard.readthedocs.io/en/0.25.0/)
 
 **JavaScript**
 
-- [Bootstrap v5.3.3](https://getbootstrap.com/)
+- [Bootstrap v5.3.3](https://getbootstrap.com/docs/5.3)
 - [jQuery v3.7.1 and v4.0.0](https://jquery.com/)
   - v3 is only used for select2 compatibility.
 - [Select2 v4.0.13](https://select2.org/)
+- [SortableJS v1.15.7](https://sortablejs.github.io/Sortable/)
+- [jquery-sortablejs v1.0.1](https://github.com/SortableJS/jquery-sortablejs/tree/1.0.0)
 - [Fuse v7.1.0](https://fusejs.io/)
 
 **CSS**
 
-- [Bootstrap v5.3.3](https://getbootstrap.com/)
+- [Bootstrap v5.3.3](https://getbootstrap.com/docs/5.3)
 - [Bootstrap Icons v1.13.1](https://icons.getbootstrap.com/)
 - [Select2 Bootstrap5 Theme v1.3.0](https://apalfrey.github.io/select2-bootstrap-5-theme/)

@@ -1,0 +1,19 @@
+.artist-image {
+    max-height: 220px;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .admin-form-row {
+        flex-direction: column;
+    }
+
+    .admin-form-row .col {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-form-row .col-auto {
+        width: 100% !important;
+    }
+}

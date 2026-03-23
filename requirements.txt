@@ -25,9 +25,9 @@ django-select2==8.4.8 \
     --hash=sha256:592e52effff2b5850cb7c98b265715b6704fb784699c4aedddfdd8ae1ffa1e81 \
     --hash=sha256:a2ce6a4c556dd2d4d57eb3753618d6f31f8d3910e9d9fa1b686d9340f50b14eb
     # via wad-project
-django-unfold==0.85.0 \
-    --hash=sha256:05060a443b266b443bf3f30a08d59dd946e325fe6607355f09c603c598441f43 \
-    --hash=sha256:4c7f363a8f9bc93a12c75f15ce72c7fee410c794649df9de007e71df35e328bd
+django-unfold==0.86.1 \
+    --hash=sha256:17d5812beeeb1e32a54ff0cbb08fb6838b6b9686ba5ec58b03a865b9b6ecec46 \
+    --hash=sha256:ecb039f3a7bf3a442e0a53e855f242eccd9ec5bdbf12a4ba04ebb4477ce9e3e9
     # via wad-project
 orjson==3.11.7 \
     --hash=sha256:1d98b30cc1313d52d4af17d9c3d307b08389752ec5f2e5febdfada70b0f8c733 \

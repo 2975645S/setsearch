@@ -14,7 +14,7 @@ from zstandard import ZstdDecompressor
 BATCH_SIZE = 100_000
 GENRES_N = 100
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR =  BASE_DIR / "data"
+DATA_DIR = BASE_DIR / "data"
 PASSWORD = os.environ.get("PASSWORD", "password123")
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
@@ -69,21 +69,6 @@ def bulk_create(objects: list[Model]):
     clazz.objects.bulk_create(objects, batch_size=BATCH_SIZE, ignore_conflicts=True)
     logger.info(f"{clazz.__name__}s created successfully.")
 
-
-def create_artist_user(artist):
-    # create user
-    user = User.objects.create_user(
-        username=artist.slug,
-        email=f"{artist.slug}@setsearch.com",
-        password=PASSWORD
-    )
-
-    # link artist to user
-    artist.user = user
-    artist.save()
-
-    return artist
-
 def create_artists(zstd: ZstdDecompressor):
     """Create artists from the compressed dataset."""
     # insert individually to trigger slug generation
@@ -93,7 +78,8 @@ def create_artists(zstd: ZstdDecompressor):
         artist.save()
 
         # link to user
-        artist.user = User.objects.create_user(username=artist.slug, email=f"{artist.slug}@setsearch.com", password=PASSWORD)
+        artist.user = User.objects.create_user(username=artist.slug, email=f"{artist.slug}@setsearch.com",
+                                               password=PASSWORD)
         artist.save()
     logger.info("Artists created successfully.")
 
@@ -168,6 +154,7 @@ def create_entries(zstd: ZstdDecompressor):
         )
 
     bulk_create(entries)
+
 
 if __name__ == "__main__":
     setup_django()

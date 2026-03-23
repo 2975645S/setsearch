@@ -17,11 +17,14 @@ function success(res) {
 }
 
 postButton.click(function () {
+    const content = commentBox.val().trim();
+    if (content.length === 0) return;
+
     $.ajax({
         url,
         method: "POST",
         data: {
-            content: commentBox.val(),
+            content,
             concert: concertId,
             csrfmiddlewaretoken: csrfToken
         },

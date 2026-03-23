@@ -6,6 +6,7 @@ from setsearch.models import User
 
 
 class SignUpForm(ModelForm):
+    username = CharField()
     password = CharField(widget=PasswordInput())
 
     def save(self, commit=True):
@@ -39,6 +40,7 @@ class LoginForm(Form):
 
 
 class ProfileForm(ModelForm):
+    username = CharField()
     password = CharField(widget=PasswordInput(), required=False)
     password_confirm = CharField(widget=PasswordInput(), required=False, label="Confirm Password")
 

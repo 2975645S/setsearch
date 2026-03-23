@@ -1,8 +1,9 @@
-from django.forms import DateField, DateInput
-from django.forms.models import ModelForm
+from django.forms import Form, DateField, DateInput
+from django.forms.models import ModelForm, ModelChoiceField
+from django_select2.forms import ModelSelect2Widget
 
 from setsearch.forms import CreateModelField
-from setsearch.models import Concert, Artist, Venue
+from setsearch.models import Concert, Artist, Venue, Song
 
 
 class CreateConcertForm(ModelForm):
@@ -10,8 +11,7 @@ class CreateConcertForm(ModelForm):
     venue = CreateModelField(Venue, required=True)
     date = DateField(widget=DateInput(attrs={"type": "date"}), required=True)
 
-
-    def save(self, commit = True):
+    def save(self, commit=True):
         concert = super().save(commit=False)
         concert.set_date(self.cleaned_data["date"])
         if commit:
@@ -22,6 +22,7 @@ class CreateConcertForm(ModelForm):
         model = Concert
         fields = ("name", "artist", "venue")
 
+
 class EditConcertForm(ModelForm):
     venue = CreateModelField(Venue)
     date = DateField(widget=DateInput(attrs={"type": "date"}))
@@ -31,7 +32,7 @@ class EditConcertForm(ModelForm):
         self.fields["venue"].initial = self.instance.venue
         self.fields["date"].initial = self.instance.date
 
-    def save(self, commit = True):
+    def save(self, commit=True):
         concert = super().save(commit=False)
         concert.set_date(self.cleaned_data["date"])
         if commit:
@@ -41,3 +42,26 @@ class EditConcertForm(ModelForm):
     class Meta:
         model = Concert
         fields = ("name", "venue")
+
+
+class SetlistWidget(ModelSelect2Widget):
+    model = Song
+    search_fields = ["title__icontains"]
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super().build_attrs(base_attrs, extra_attrs)
+        attrs.update({
+            "data-placeholder": "Search for a song...",
+            "data-minimum-input-length": "0",
+        })
+        return attrs
+
+    def label_from_instance(self, song: Song):
+        return song.title
+
+
+class SetlistForm(Form):
+    def __init__(self, artist: Artist, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["song"] = ModelChoiceField(queryset=Song.objects.filter(artist=artist),
+                                               widget=SetlistWidget(), label="Add song to setlist")

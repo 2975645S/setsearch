@@ -16,12 +16,12 @@ function updateLink(username) {
     })
 }
 
-select.on("select2:select", function (e) {
-    const username = e.params.data.text;
+select.on("select2:select", function () {
+    const username = $(this).text();
     updateLink(username);
 });
 
-reset.click(() => {
+reset.click(function () {
     select.val(null).trigger("change");
     updateLink(null);
 });

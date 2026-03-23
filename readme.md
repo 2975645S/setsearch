@@ -19,8 +19,8 @@ uv run pre-commit install
 - [x] Sign-up/login page
 - [x] Search artists on homepage
 - [x] Create concert from artist page
-  - [ ] If the artist edits the concert, make it read-only to anyone who is not superuser or the artist. Display "verified" badge.
-  - [ ] Add songs to setlist, let user reorder them
+  - [x] If the artist edits the concert, make it read-only to anyone who is not superuser or the artist. Display "verified" badge.
+  - [x] Add songs to setlist, let user reorder them
     - Starts with empty setlist.
   - [x] Concerts should have an "attended?" button for authenticated users (bar the artist).
   - [x] Blank star rating on concert page. If authenticated, can click to set rating. Average rating

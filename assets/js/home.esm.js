@@ -8,7 +8,7 @@ const input = $("#artist-search");
 const results = $("#search-results");
 
 // update search results as the user types
-input.keyup(() => {
+input.keyup(function () {
     const query = input.val().trim();
 
     if (query.length < 2) {
@@ -32,13 +32,13 @@ input.keyup(() => {
 });
 
 // show the results dropdown when the input is focused
-input.focus(() => {
+input.focus(function () {
     if (results.children().length > 0) {
         results.show();
     }
 });
 
 // hide the results dropdown when the input loses focus
-input.blur(() => {
+input.blur(function () {
     setTimeout(() => results.hide(), 100);
 })

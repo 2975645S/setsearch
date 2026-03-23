@@ -12,7 +12,7 @@ function pluralize(count, word) {
     return count + ' ' + word + (count === 1 ? '' : 's');
 }
 
-attendButton.click(() => {
+attendButton.click(function () {
     $.ajax({
         url: `/api/attend/${concertId}`,
         method: "POST",

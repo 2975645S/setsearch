@@ -39,11 +39,11 @@
 
             <!-- auth links -->
             <div class="navbar-nav ms-auto">
-                {% if request.user.is_superuser %}
-                    {% nav_link "admin:index" "Admin" %}
-                {% endif %}
                 {% if request.user.is_authenticated %}
-                    {% nav_link "profile" "Profile" %}
+                    {% nav_link "profile" request.user.username %}
+                    {% if request.user.is_superuser %}
+                        {% nav_link "admin:index" "Admin UI" %}
+                    {% endif %}
                     {% nav_link "logout" "Logout" next=True %}
                 {% else %}
                     {% nav_link "login" "Login" next=True %}

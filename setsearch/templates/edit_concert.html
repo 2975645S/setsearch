@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load django_bootstrap5 %}
+{% load static %}
 
 {% block title %}
     SetSearch - Editing {{ concert.artist.name }} @ {{ concert.venue.name }}
@@ -13,17 +14,35 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Editing {{ concert.artist.name }} @ {{ concert.venue.name }} on {{ concert.date }}</h2>
-    <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form edit_form %}
+    {% csrf_token %}
 
-        {% bootstrap_button button_type="submit" content="Update concert" %}
-    </form>
+    <h2>Editing {{ concert.artist.name }} @ {{ concert.venue.name }} on {{ concert.date }}</h2>
+    {% bootstrap_form edit_form %}
+
+    <hr/>
+
+    <h2>Edit Setlist</h2>
+
+    {% bootstrap_form setlist_form %}
+
+    <ol class="list-group list-group-numbered mb-4" id="setlist">
+        {% for entry in setlist %}
+            <li class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ entry.song_id }}">
+                <strong class="me-3">{{ entry.song.title }}</strong>
+                <button class="btn btn-sm btn-danger remove-song">Delete</button>
+            </li>
+        {% endfor %}
+    </ol>
+
+    {% bootstrap_button button_type="submit" content="Update concert" id="update-button" data_concert=concert.id %}
 {% endblock %}
 
 {% block scripts %}
     <!-- select5 needs jQuery 3 -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     {{ edit_form.media.js }}
+
+    <script src=" https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/jquery-sortablejs@1.0.1/jquery-sortable.min.js"></script>
+    <script src="{% static 'js/setlist.js' %}"></script>
 {% endblock %}

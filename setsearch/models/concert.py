@@ -2,7 +2,7 @@ import datetime
 
 from django.core.exceptions import ValidationError
 from django.db.models import Model, ForeignKey, CASCADE, SET_NULL
-from django.db.models.fields import CharField, SlugField, SmallIntegerField, DateTimeField
+from django.db.models.fields import CharField, SlugField, SmallIntegerField, DateTimeField, BooleanField
 from django.utils import timezone
 
 from setsearch.models.artist import Artist
@@ -36,6 +36,7 @@ class Concert(Model):
     venue = ForeignKey(Venue, on_delete=CASCADE, null=True)
     last_modified = DateTimeField(default=timezone.now)
     modified_by = ForeignKey(User, on_delete=SET_NULL, null=True)
+    verified = BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.name:
@@ -61,9 +62,12 @@ class Concert(Model):
         if not self.slug:
             self.slug = unique_slug(self, "slug", self.name)
 
+        self.last_modified = timezone.now()
         super().save(*args, **kwargs)
 
-    def date(self) -> datetime.date:
+    def date(self) -> datetime.date | None:
+        if None in (self.year, self.month, self.day):
+            return None
         return datetime.date(self.year, self.month, self.day)
 
     def set_date(self, date: datetime.date):

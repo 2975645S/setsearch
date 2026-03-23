@@ -19,19 +19,28 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="card-title mb-1">
                         {{ concert.name }}
+                        {% if concert.verified %}
+                            <span class="badge bg-success ms-2">
+                                <i class="bi bi-check-circle-fill"></i> Verified
+                            </span>
+                        {% endif %}
                     </h2>
                     <h4 class="card-title mb-1 d-flex gap-2 align-items-center">
                         <i class="bi bi-people-fill"></i>
-                        <a class="text-decoration-none fw-semibold text-primary" href="{% url "artist" concert.artist.slug %}">{{ concert.artist.name }}</a>
+                        <a class="text-decoration-none fw-semibold text-primary"
+                           href="{% url "artist" concert.artist.slug %}">{{ concert.artist.name }}</a>
                     </h4>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center">
                     <p class="text-muted mb-2">
                         {% if concert.venue %}
-                            {{ concert.venue.name }} &middot;
+                            {{ concert.venue.name }}
                         {% endif %}
-                        {{ concert.date|date:"F j, Y" }}
+                        {% if concert.venue and concert.date %}&middot;{% endif %}
+                        {% if concert.date %}
+                            {{ concert.date|date:"F j, Y" }}
+                        {% endif %}
                     </p>
                     <div class="text-muted" id="attendance-count">
                         {{ attendees|intcomma }} attendee{{ attendees|pluralize }}
@@ -42,7 +51,12 @@
                     <!-- buttons -->
                     {% if request.user.is_authenticated %}
                         <div class="d-flex align-items-center gap-2 mt-2">
-                            <a href="{% url "edit_concert" concert.artist.slug concert.slug %}" class="btn btn-outline-primary btn-sm">Edit</a>
+                            {% if concert.verified and not request.user.is_superuser and request.user != concert.artist.user %}
+                                <button class="btn btn-sm" disabled>Edit</button>
+                            {% else %}
+                                <a href="{% url "edit_concert" concert.artist.slug concert.slug %}"
+                                   class="btn btn-outline-primary btn-sm">Edit</a>
+                            {% endif %}
 
                             <!-- attendance -->
                             <button class="btn {% if rating is None %}btn-outline-success{% else %}btn-success{% endif %} btn-sm"
@@ -79,7 +93,7 @@
                         {% if setlist %}
                             <ol class="list-group list-group-numbered">
                                 {% for entry in setlist %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center text-end">
                                         <div>
                                             <strong>{{ entry.song.title }}</strong>
                                             <div class="text-muted small">

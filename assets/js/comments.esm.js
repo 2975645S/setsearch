@@ -16,7 +16,7 @@ function success(res) {
     commentBox.val("");
 }
 
-postButton.click(() => {
+postButton.click(function () {
     $.ajax({
         url,
         method: "POST",

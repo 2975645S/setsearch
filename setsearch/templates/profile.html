@@ -19,9 +19,8 @@
     <ul>
         {% for concert in concerts %}
             <li>
-                <a href="{% url "concert" concert.artist.slug concert.slug %}">
-                    {{ concert.name }}
-                </a> ({{ concert.artist.name }}, {{ concert.year }})
+                <a href="{% url "concert" concert.artist.slug concert.slug %}">{{ concert.name }}</a>
+                ({{ concert.artist.name }}, {{ concert.year }})
             </li>
         {% empty %}
             <p>You haven't attended any concerts yet.</p>

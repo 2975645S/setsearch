@@ -1,3 +1,4 @@
+from datetime import datetime
 from http import HTTPStatus
 
 import orjson
@@ -6,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 
-from setsearch.models import Artist, Concert, Comment, Attendance
+from setsearch.models import Artist, Concert, Comment, Attendance, SetlistEntry, Venue, Song
 
 
 def list_artists(_: HttpRequest) -> HttpResponse:
@@ -70,5 +71,59 @@ def rating(request: HttpRequest, concert_id: int) -> HttpResponse:
     rating = int(request.POST.get("rating"))
     attendance.rating = rating
     attendance.save()
+
+    return HttpResponse(status=HTTPStatus.OK)
+
+
+@require_POST
+def update_concert(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponse(status=HTTPStatus.UNAUTHORIZED)
+
+    # find the concert
+    concert_id = request.POST.get("concert_id")
+    concert = get_object_or_404(Concert, id=concert_id)
+
+    # if the concert was last modified by the artist, only the artist and superusers can edit it
+    if concert.verified and not (request.user.is_superuser or request.user == concert.artist.user):
+        return HttpResponse(status=HTTPStatus.FORBIDDEN)
+
+    # update the concert
+    name = request.POST.get("name", concert.name)
+    venue: Venue = request.POST.get("venue_id", concert.venue)
+
+    if type(venue) == str:
+        venue = get_object_or_404(Venue, id=venue)
+
+    date = request.POST.get("date", concert.date)
+
+    concert.name = name
+    concert.venue = venue
+    concert.set_date(datetime.strptime(date, "%Y-%m-%d").date())
+    concert.modified_by = request.user
+
+    if not concert.verified and request.user == concert.artist.user:
+        concert.verified = True
+
+    concert.save()
+
+    # update setlist
+    existing = SetlistEntry.objects.filter(concert=concert)
+    existing.delete()
+
+    setlist = orjson.loads(request.POST.get("setlist", "[]"))
+    songs = Song.objects.filter(id__in=setlist)
+    song_map = {song.id: song for song in songs}
+    new = [
+        SetlistEntry(
+            song=song_map[song_id],
+            concert=concert,
+            position=i
+        )
+        for i, song_id in enumerate(setlist)
+        if song_id in song_map
+    ]
+
+    SetlistEntry.objects.bulk_create(new)
 
     return HttpResponse(status=HTTPStatus.OK)

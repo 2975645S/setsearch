@@ -13,7 +13,8 @@ from zstandard import ZstdDecompressor
 
 BATCH_SIZE = 100_000
 GENRES_N = 100
-DATA_DIR = BASE_DIR = Path(__file__).resolve().parent / "data"
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR =  BASE_DIR / "data"
 PASSWORD = os.environ.get("PASSWORD", "password123")
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")

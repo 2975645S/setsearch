@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.views.decorators.http import require_GET
 
-from setsearch.forms.concert import CreateConcertForm, EditConcertForm
+from setsearch.forms.concert import CreateConcertForm, EditConcertForm, SetlistForm
 from setsearch.models import Concert, Comment, SetlistEntry, Artist, Attendance
 
 
@@ -43,21 +44,23 @@ def view_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> H
             pass
 
     return render(request, "concert.html",
-                  {"concert": concert, "comments": comments, "setlist": setlist, "attendees": attendees, "rating": rating})
+                  {"concert": concert, "comments": comments, "setlist": setlist, "attendees": attendees,
+                   "rating": rating})
+
 
 @login_required
+@require_GET
 def edit_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> HttpResponse:
     concert = get_object_or_404(Concert, slug=concert_slug, artist__slug=artist_slug)
 
-    if request.method == "POST":
-        edit_form = EditConcertForm(request.POST, instance=concert)
-        print(edit_form)
-        if edit_form.is_valid():
-            concert = edit_form.save(commit=False)
-            concert.modified_by = request.user
-            concert.save()
-            return redirect("concert", artist_slug=concert.artist.slug, concert_slug=concert.slug)
-    else:
-        edit_form = EditConcertForm(instance=concert)
+    # only the artist and admins can edit this concert
+    if concert.verified and not (request.user.is_superuser or request.user == concert.artist.user):
+        return redirect("concert", artist_slug=artist_slug, concert_slug=concert_slug)
 
-    return render(request, "edit_concert.html", {"concert": concert, "edit_form": edit_form})
+    setlist = SetlistEntry.objects.filter(concert=concert).order_by("position")
+
+    edit_form = EditConcertForm(instance=concert)
+    setlist_form = SetlistForm(concert.artist)
+
+    return render(request, "edit_concert.html",
+                  {"concert": concert, "setlist": setlist, "edit_form": edit_form, "setlist_form": setlist_form})

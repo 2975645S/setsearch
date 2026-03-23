@@ -42,7 +42,7 @@
                     <!-- buttons -->
                     {% if request.user.is_authenticated %}
                         <div class="d-flex align-items-center gap-2 mt-2">
-                            <a href="#" class="btn btn-outline-primary btn-sm">Edit</a>
+                            <a href="{% url "edit_concert" concert.artist.slug concert.slug %}" class="btn btn-outline-primary btn-sm">Edit</a>
 
                             <!-- attendance -->
                             <button class="btn {% if rating is None %}btn-outline-success{% else %}btn-success{% endif %} btn-sm"

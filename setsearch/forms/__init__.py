@@ -14,6 +14,14 @@ class CreateModelField(CharField):
         self._input_field = input_field
         self.widget = CreateModelSelect2Widget(model, input_field)
 
+    def prepare_value(self, value):
+        if isinstance(value, self._model):
+            return {
+                "id": getattr(value, self._pk),
+                "text": getattr(value, self._input_field)
+            }
+        return super().prepare_value(value)
+
     def clean(self, value):
         value = super().clean(value)
         if not value:

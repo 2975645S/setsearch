@@ -1,4 +1,4 @@
-from datetime import date
+import datetime
 
 from django.core.exceptions import ValidationError
 from django.db.models import Model, ForeignKey, CASCADE, SET_NULL
@@ -63,8 +63,13 @@ class Concert(Model):
 
         super().save(*args, **kwargs)
 
-    def date(self) -> date:
-        return date(self.year, self.month, self.day)
+    def date(self) -> datetime.date:
+        return datetime.date(self.year, self.month, self.day)
+
+    def set_date(self, date: datetime.date):
+        self.year = date.year
+        self.month = date.month
+        self.day = date.day
 
     def clean(self):
         if self.day and not self.month:

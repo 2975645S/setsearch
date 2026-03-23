@@ -1,28 +1,29 @@
 {% extends "_base.html" %}
 {% load django_bootstrap5 %}
 
-{% block title %}SetSearch - Create a Concert{% endblock title %}
+{% block title %}
+    SetSearch - Editing {{ concert.artist.name }} @ {{ concert.venue.name }}
+{% endblock %}
 
 {% block head %}
     <!-- select5 bootstrap theme -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
-    {{ form.media.css }}
+    {{ edit_form.media.css }}
 {% endblock %}
 
 {% block content %}
-    <h1>Create a Concert</h1>
-
+    <h2>Editing {{ concert.artist.name }} @ {{ concert.venue.name }} on {{ concert.date }}</h2>
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form form %}
+        {% bootstrap_form edit_form %}
 
-        {% bootstrap_button button_type="submit" content="Create concert" %}
+        {% bootstrap_button button_type="submit" content="Update concert" %}
     </form>
 {% endblock %}
 
 {% block scripts %}
     <!-- select5 needs jQuery 3 -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    {{ form.media.js }}
+    {{ edit_form.media.js }}
 {% endblock %}

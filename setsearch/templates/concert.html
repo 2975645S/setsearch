@@ -66,8 +66,7 @@
                             <!-- attend -->
                             {% if request.user != concert.artist.user %}
                                 <button class="btn {% if rating is None %}btn-outline-success{% else %}btn-success{% endif %} btn-sm"
-                                        id="attend-button"
-                                        data-concert="{{ concert.id }}">
+                                        id="attend-button">
                                     {% if rating is None %}
                                         Not attended
                                     {% else %}
@@ -139,6 +138,7 @@
                                         id="comment-box"
                                         placeholder="Write a comment..."
                                         required
+                                        data-concert="{{ concert.id }}"
                                 ></textarea>
                                 <label for="comment-box">Write a comment...</label>
                             </div>

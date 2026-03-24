@@ -1,7 +1,8 @@
 // attendance
 const attendButton = $("#attend-button");
 const attendanceCount = $("#attendance-count");
-const concertId = attendButton.data("concert");
+const commentBox = $("#comment-box");
+const concertId = commentBox.data("concert");
 const csrfToken = $("input[name=csrfmiddlewaretoken]").val();
 
 const ratingArea = $("#rating-area");
@@ -77,7 +78,6 @@ stars.click(function () {
 });
 
 // comments
-const commentBox = $("#comment-box");
 const commentsList = $("#comments-list");
 const postButton = $("#post-comment");
 

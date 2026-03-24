@@ -4,19 +4,21 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_GET
 
 from setsearch.forms.auth import SignUpForm, LoginForm, ProfileForm
-from setsearch.models import User, Attendance
+from setsearch.models import User, Concert
 
 F = TypeVar("F")
 
 
 def auth_page(request: HttpRequest, template: str, form_cls: type[F], get_user: Callable[[F], User]) -> HttpResponse:
-    """Generic authentication page for both signup and login."""
-    if request.user.is_authenticated:
-        return redirect("home")
+    """Authentication page for both login and signup. Renders the appropriate form and handles form submission."""
+    next_url = request.GET.get("next") or request.POST.get("next") or "home"
 
-    next_url = request.GET.get("next") or request.POST.get("next")
+    # user is already authenticated, no need to show the form
+    if request.user.is_authenticated:
+        return redirect(next_url)
 
     if request.method == "POST":
         form = form_cls(request.POST)
@@ -24,7 +26,7 @@ def auth_page(request: HttpRequest, template: str, form_cls: type[F], get_user: 
         if form.is_valid():
             user = get_user(form)
             login(request, user)
-            return redirect(next_url or "home")
+            return redirect(next_url)
     else:
         form = form_cls()
 
@@ -32,33 +34,39 @@ def auth_page(request: HttpRequest, template: str, form_cls: type[F], get_user: 
 
 
 def signup_page(request: HttpRequest) -> HttpResponse:
+    """Page for signing up for a new account."""
     return auth_page(request, "signup", SignUpForm, lambda form: form.save())
+
+
 def login_page(request: HttpRequest) -> HttpResponse:
+    """Page for logging in to an existing account."""
     return auth_page(request, "login", LoginForm, lambda form: form.cleaned_data["user"])
 
+
+@require_GET
 def logout(request: HttpRequest) -> HttpResponse:
     """Logs out the user and redirects to the home page."""
     from django.contrib.auth import logout
-
-    next_url = request.GET.get("next") or request.POST.get("next")
     logout(request)
 
-    return redirect(next_url or "home")
+    next_url = request.GET.get("next") or "home"
+    return redirect(next_url)
+
 
 @login_required
 def profile(request: HttpRequest) -> HttpResponse:
-    user = request.user
-    concerts = []
-
+    """Page for viewing and editing the user's profile, as well as viewing attended concerts."""
     if request.method == "POST":
-        form = ProfileForm(request.POST, instance=user)
+        form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            login(request, user)
+            # re-login the user to update the session with the new user data
+            login(request, request.user)
             return redirect("profile")
     else:
-        attendances = Attendance.objects.filter(user=user)
-        concerts = [attendance.concert for attendance in attendances]
-        form = ProfileForm(instance=user)
+        form = ProfileForm(instance=request.user)
+
+    concerts = Concert.objects.filter().filter(attendance__user=request.user).select_related("artist",
+                                                                                             "venue").order_by("-date")
 
     return render(request, "profile.html", {"form": form, "concerts": concerts})

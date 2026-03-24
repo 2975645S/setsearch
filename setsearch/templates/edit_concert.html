@@ -11,8 +11,8 @@
         <div class="mx-auto form-container">
             {% csrf_token %}
 
-            <h2>Editing {{ concert.artist.name }} @ {{ concert.venue.name }} on {{ concert.date }}</h2>
-            {% bootstrap_form edit_form %}
+            <h2>Editing {{ concert.artist.name }} @ {{ concert.venue.name }} on {{ concert.date_str }}</h2>
+            {% bootstrap_form form %}
 
             <hr/>
 

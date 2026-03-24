@@ -37,12 +37,9 @@
                 <div class="d-flex justify-content-between align-items-center concert-header-flex mt-2">
                     <p class="text-muted mb-0">
                         {% if concert.venue %}
-                            {{ concert.venue.name }}
+                            {{ concert.venue.name }} &middot;
                         {% endif %}
-                        {% if concert.venue and concert.date %}&middot;{% endif %}
-                        {% if concert.date %}
-                            {{ concert.date|date:"F j, Y" }}
-                        {% endif %}
+                        {{ concert.date_str }}
                     </p>
                     <div class="text-muted" id="attendance-count">
                         {{ attendees|intcomma }} attendee{{ attendees|pluralize }}

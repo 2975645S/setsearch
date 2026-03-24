@@ -11,7 +11,7 @@ const results = $("#search-results");
 input.keyup(function () {
     const query = input.val().trim();
 
-    if (query.length < 2) {
+    if (query.length === 0) {
         results.hide().empty();
         return;
     }

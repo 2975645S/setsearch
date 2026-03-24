@@ -21,7 +21,7 @@
             {% for concert in concerts %}
                 <li>
                     <a href="{% url "concert" concert.artist.slug concert.slug %}">{{ concert.name }}</a>
-                    ({{ concert.artist.name }}, {{ concert.year }})
+                    ({{ concert.artist.name }}{% if concert.year %}, {{ concert.year }}{% endif %})
                 </li>
             {% endfor %}
         </ul>

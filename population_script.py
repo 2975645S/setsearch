@@ -69,6 +69,7 @@ def bulk_create(objects: list[Model]):
     clazz.objects.bulk_create(objects, batch_size=BATCH_SIZE, ignore_conflicts=True)
     logger.info(f"{clazz.__name__}s created successfully.")
 
+
 def create_artists(zstd: ZstdDecompressor):
     """Create artists from the compressed dataset."""
     # insert individually to trigger slug generation
@@ -131,9 +132,9 @@ def create_concerts(zstd: ZstdDecompressor):
         if not artist or not venue:
             continue
 
-        concert = Concert(mbid=data["mbid"], artist=artist, name=data["name"], year=data["year"], month=data["month"],
-                          day=data["day"],
+        concert = Concert(mbid=data["mbid"], artist=artist, name=data["name"],
                           venue=venue, modified_by=admin)
+        concert.set_date(data["year"], data["month"], data["day"])
         concert.save()
 
 

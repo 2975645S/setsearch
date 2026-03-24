@@ -9,14 +9,14 @@ setlist.sortable({
 // select2
 const songInput = $("#id_song");
 
-function createSong(id, name) {
+function createSong(id, text) {
     const child = $("<li>", {
         class: "list-group-item d-flex justify-content-between align-items-center",
         "data-id": id
     }).append(
         $("<strong>", {
             class: "me-3",
-            text: name
+            text
         }),
         $("<button>", {
             class: "btn btn-sm btn-danger remove-song",
@@ -27,12 +27,11 @@ function createSong(id, name) {
 }
 
 songInput.on("select2:select", function (e) {
-    const id = songInput.val();
-    const name = $(this).text();
+    const { id, text } = e.params.data;
+    createSong(id, text);
 
     // clear the selection
     songInput.val(null).trigger("change");
-    createSong(id, name);
 });
 
 setlist.on("click", ".remove-song", function () {

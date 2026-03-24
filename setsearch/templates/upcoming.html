@@ -19,7 +19,7 @@
 
                                 <h6 class="card-subtitle mb-2 text-muted">
                                     {% if concert.venue %}{{ concert.venue.name }}, {% endif %}
-                                    {{ concert.date|date:"d-m-Y" }}
+                                    {{ concert.date_str }}
                                 </h6>
 
                                 <p class="card-text mt-2">{{ concert.name }}</p>

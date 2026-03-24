@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
@@ -11,14 +10,22 @@ from setsearch.models import Concert, Comment, SetlistEntry, Artist, Attendance
 
 @login_required
 def create_concert(request: HttpRequest) -> HttpResponse:
+    """Page for creating a new concert."""
     if request.method == "POST":
+        # POST form
         form = CreateConcertForm(request.POST)
+
         if form.is_valid():
+            # create concert
             concert = form.save(commit=False)
             concert.modified_by = request.user
             concert.save()
+
+            # redirect to the new concert page
             return redirect("concert", artist_slug=concert.artist.slug, concert_slug=concert.slug)
     else:
+        # GET
+        # pre-fill the artist if a slug is provided in the query  params
         artist_slug = request.GET.get("artist")
         initial = {}
 
@@ -31,19 +38,24 @@ def create_concert(request: HttpRequest) -> HttpResponse:
     return render(request, "create_concert.html", {"form": form})
 
 
+@require_GET
 def view_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> HttpResponse:
-    concert = get_object_or_404(Concert, slug=concert_slug, artist__slug=artist_slug)
-    comments = Comment.objects.filter(concert=concert).order_by("timestamp")
-    setlist = SetlistEntry.objects.filter(concert=concert).order_by("position")
-    attendees = Attendance.objects.filter(concert=concert).count()
+    """Concert page displaying details, comments, setlist, and attendance info."""
+    # fetch data
+    concert = get_object_or_404(Concert.objects.select_related("artist", "venue"), artist__slug=artist_slug,
+                                slug=concert_slug)
+    comments = Comment.objects.filter(concert=concert).select_related("user").order_by("timestamp")
+    setlist = SetlistEntry.objects.filter(concert=concert).select_related("song").order_by("position")
+
+    attendance_qs = Attendance.objects.filter(concert=concert)
+    attendees = attendance_qs.count()
+
+    # determine the user's rating if they are logged in
     rating = None
 
     if request.user.is_authenticated:
-        try:
-            attendance = Attendance.objects.get(concert=concert, user=request.user)
-            rating = attendance.rating or 0
-        except Attendance.DoesNotExist:
-            pass
+        attendance = attendance_qs.filter(user=request.user).only("rating").first()
+        rating = attendance.rating or 0 if attendance else None
 
     return render(request, "concert.html",
                   {"concert": concert, "comments": comments, "setlist": setlist, "attendees": attendees,
@@ -53,26 +65,30 @@ def view_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> H
 @login_required
 @require_GET
 def edit_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> HttpResponse:
-    concert = get_object_or_404(Concert, slug=concert_slug, artist__slug=artist_slug)
+    """Page for editing an existing concert. Uses /api/concerts/update for saving changes on the client-side."""
+    concert = get_object_or_404(Concert.objects.select_related("artist__user"), slug=concert_slug,
+                                artist__slug=artist_slug)
 
     # only the artist and admins can edit this concert
-    if concert.verified and not (request.user.is_superuser or request.user == concert.artist.user):
+    is_artist = request.user == concert.artist.user
+    is_admin = request.user.is_superuser
+    can_edit = is_admin or is_artist
+
+    if concert.verified and not can_edit:
         return redirect("concert", artist_slug=artist_slug, concert_slug=concert_slug)
 
-    setlist = SetlistEntry.objects.filter(concert=concert).order_by("position")
-
+    setlist = SetlistEntry.objects.filter(concert=concert).select_related("song").order_by("position")
     edit_form = EditConcertForm(instance=concert)
     setlist_form = SetlistForm(concert.artist)
 
     return render(request, "edit_concert.html",
-                  {"concert": concert, "setlist": setlist, "edit_form": edit_form, "setlist_form": setlist_form})
+                  {"concert": concert, "setlist": setlist, "form": edit_form, "setlist_form": setlist_form})
 
+
+@require_GET
 def upcoming_concerts(request: HttpRequest) -> HttpResponse:
+    """Page listing all upcoming concerts."""
     today = timezone.now().date()
-    concerts = Concert.objects.filter(
-        Q(year__gt=today.year) |
-        Q(year=today.year, month__gt=today.month) |
-        Q(year=today.year, month=today.month, day__gte=today.day)
-    ).order_by("year", "month", "day")
+    concerts = Concert.objects.filter(date__isnull=False, date__gte=today).order_by("date")
 
     return render(request, "upcoming.html", {"concerts": concerts})

@@ -48,25 +48,5 @@ urlpatterns = [
 
     # other apps
     path('admin/', admin.site.urls),
-    path("select2/", include("django_select2.urls")),
-
-    # # SetSearch
-    # path("", home_page, name="home"),
-    # path("artist/<str:artist_slug>", view_artist, name="artist"),
-    # path("artist/<str:artist_slug>/<str:concert_slug>", view_concert, name="concert"),
-    # path("profile", profile, name="profile"),
-    # path("upcoming", upcoming_concerts, name="upcoming"),
-    #
-    # # Auth
-    # path("signup", signup_page, name="signup"),
-    # path("login", login_page, name="login"),
-    # path("logout", logout, name="logout"),
-    #
-    # # API
-    # path("api/artists/list", list_artists),
-    # path("api/artist/<str:artist_slug>/link", link_artist),
-    # path("api/comment", comment),
-    # path("api/attend/<int:concert_id>", attend),
-    # path("api/rating/<int:concert_id>", rating),
-    # path("api/concert/update", update_concert),
+    path("select2/", include("django_select2.urls"))
 ]

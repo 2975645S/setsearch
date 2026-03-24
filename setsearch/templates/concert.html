@@ -58,7 +58,7 @@
                             {% endif %}
 
                             <!-- delete -->
-                            {% if concert.verified and request.user == concert.artist.user or request.user.is_superuser %}
+                            {% if request.user == concert.artist.user or request.user.is_superuser %}
                                 <button class="btn btn-outline-danger btn-sm" id="delete-concert">Delete</button>
                             {% endif %}
 

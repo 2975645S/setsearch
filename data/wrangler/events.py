@@ -64,7 +64,8 @@ def parse_mb_entity(text: str):
     return None, text.strip()
 
 
-def parse_setlist(songs: dict[tuple[str, str], str], artist_mbid: str, concert_mbid: str, setlist: str) -> list[SetlistEntry]:
+def parse_setlist(songs: dict[tuple[str, str], str], artist_mbid: str, concert_mbid: str, setlist: str) -> list[
+    SetlistEntry]:
     entries = []
     position = 1
 

@@ -5,6 +5,7 @@ from django.template.defaultfilters import slugify
 
 M = TypeVar("M", bound=Model)
 
+
 def unique_slug(instance: M, field: str, value: str) -> str:
     slug = slugify(value)
     unique = slug

@@ -11,6 +11,7 @@ PROGRESS_INTERVAL = 100
 
 logger = get_logger()
 
+
 def fetch_cover_by_release(http: Session, release: str, refs: list[CoverArtRef]):
     res = http.get(f"https://coverartarchive.org/release/{release}", timeout=10)
     image = None
@@ -28,6 +29,7 @@ def fetch_cover_by_release(http: Session, release: str, refs: list[CoverArtRef])
                 image = data.get("images", [{}])[0].get("image")
 
     return refs, image
+
 
 def fetch_all_covers(http: Session, refs: list[CoverArtRef]) -> dict[str, str | None]:
     covers: dict[str, str | None] = {}

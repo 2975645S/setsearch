@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,7 +18,8 @@ class Migration(migrations.Migration):
             name='Venue',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mbid', models.CharField(blank=True, max_length=36, null=True, unique=True, verbose_name='MusicBrainz ID')),
+                ('mbid',
+                 models.CharField(blank=True, max_length=36, null=True, unique=True, verbose_name='MusicBrainz ID')),
                 ('name', models.CharField(max_length=255)),
                 ('city', models.CharField(max_length=255, null=True)),
                 ('address', models.CharField(max_length=255, null=True)),
@@ -29,27 +29,33 @@ class Migration(migrations.Migration):
             name='Artist',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mbid', models.CharField(blank=True, max_length=36, null=True, unique=True, verbose_name='MusicBrainz ID')),
+                ('mbid',
+                 models.CharField(blank=True, max_length=36, null=True, unique=True, verbose_name='MusicBrainz ID')),
                 ('name', models.CharField(db_index=True, max_length=255)),
                 ('slug', models.SlugField(blank=True)),
                 ('picture', models.CharField(blank=True, null=True)),
-                ('user', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                              to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Concert',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mbid', models.CharField(blank=True, max_length=36, null=True, unique=True, verbose_name='MusicBrainz ID')),
+                ('mbid',
+                 models.CharField(blank=True, max_length=36, null=True, unique=True, verbose_name='MusicBrainz ID')),
                 ('name', models.CharField(blank=True, max_length=255)),
                 ('slug', models.SlugField(blank=True)),
                 ('last_modified', models.DateTimeField(default=django.utils.timezone.now)),
                 ('verified', models.BooleanField(default=False)),
                 ('date', models.DateField(blank=True, null=True)),
-                ('precision', models.SmallIntegerField(choices=[(0, 'None'), (1, 'Year'), (2, 'Month'), (3, 'Day')], default=0)),
+                ('precision',
+                 models.SmallIntegerField(choices=[(0, 'None'), (1, 'Year'), (2, 'Month'), (3, 'Day')], default=0)),
                 ('artist', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='setsearch.artist')),
-                ('modified_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('venue', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='setsearch.venue')),
+                ('modified_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                                  to=settings.AUTH_USER_MODEL)),
+                ('venue',
+                 models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='setsearch.venue')),
             ],
             options={
                 'ordering': [models.OrderBy(models.F('date'), nulls_last=True)],

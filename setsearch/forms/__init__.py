@@ -6,6 +6,7 @@ from django_select2.forms import Select2Mixin, Select2TagMixin
 def article(word):
     return "an" if word[0].lower() in "aeiou" else "a"
 
+
 class CreateModelField(CharField):
     def __init__(self, model: type[Model], input_field: str = "name", *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,6 +39,7 @@ class CreateModelField(CharField):
         obj, _ = self._model.objects.get_or_create(**{self._input_field: value})
         return obj
 
+
 class CreateModelSelect2Widget(Select2Mixin, Select2TagMixin, Select):
     def __init__(self, model: type[Model], input_field: str = "name"):
         super().__init__()
@@ -48,5 +50,5 @@ class CreateModelSelect2Widget(Select2Mixin, Select2TagMixin, Select):
         attrs = super().build_attrs(base_attrs, extra_attrs)
         name = self._model._meta.verbose_name
         attrs["data-placeholder"] = f"Search for {article(name)} {name}..."
-        attrs["data-token-separators"] = '[","]' # allow spaces
+        attrs["data-token-separators"] = '[","]'  # allow spaces
         return attrs

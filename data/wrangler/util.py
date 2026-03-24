@@ -12,10 +12,12 @@ HEADERS = {
     "Accept-Encoding": "gzip"
 }
 
+
 def get_logger() -> logging.Logger:
     """Get a logger with a consistent format."""
     logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
     return logging.getLogger(__name__)
+
 
 def get_http() -> Session:
     """Get a requests session with retry logic and sane headers."""

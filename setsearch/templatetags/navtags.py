@@ -4,6 +4,7 @@ from django.utils.html import format_html
 
 register = Library()
 
+
 @register.simple_tag(takes_context=True)
 def nav_link(context: Context, view_name: str, label: str, next: bool = False) -> str:
     request = context["request"]

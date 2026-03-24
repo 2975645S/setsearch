@@ -24,6 +24,7 @@ COMPRESSION_LEVEL = 19
 
 DATA_DIR = Path(__file__).resolve().parent.parent
 
+
 def write(zstd: ZstdCompressor, name: str, data: list[object]):
     """Write a list of objects to a zstd-compressed ndjson file."""
     with open(DATA_DIR / f"{name}.ndjson.zst", "wb") as f, zstd.stream_writer(f) as writer:

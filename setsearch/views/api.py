@@ -15,7 +15,7 @@ from setsearch.models import Concert, Attendance, SetlistEntry, Comment, Artist
 @api(ApiConcertAttendForm)
 def api_concert_attend(request: HttpRequest, data: ApiConcertAttendForm) -> HttpResponse:
     with transaction.atomic():
-        query = { "user": request.user, "concert": data["concert"] }
+        query = {"user": request.user, "concert": data["concert"]}
         qs = Attendance.objects.filter(**query)
 
         if qs.exists():
@@ -27,6 +27,7 @@ def api_concert_attend(request: HttpRequest, data: ApiConcertAttendForm) -> Http
 
     return JsonResponse({"attending": attending}, status=HTTPStatus.OK)
 
+
 @require_POST
 @api(ApiConcertRateForm)
 def api_concert_rate(request: HttpRequest, data: ApiConcertRateForm) -> HttpResponse:
@@ -36,6 +37,7 @@ def api_concert_rate(request: HttpRequest, data: ApiConcertRateForm) -> HttpResp
         return HttpResponse(status=HTTPStatus.NOT_FOUND)
 
     return HttpResponse(status=HTTPStatus.OK)
+
 
 @require_POST
 @api(ApiConcertUpdateForm)
@@ -71,6 +73,7 @@ def api_concert_update(request: HttpRequest, data: ApiConcertUpdateForm) -> Http
 
     return HttpResponse(status=HTTPStatus.OK)
 
+
 @require_POST
 @api(ApiConcertDeleteForm)
 def api_concert_delete(request: HttpRequest, data: ApiConcertDeleteForm) -> HttpResponse:
@@ -80,6 +83,7 @@ def api_concert_delete(request: HttpRequest, data: ApiConcertDeleteForm) -> Http
 
     data["concert"].delete()
     return HttpResponse(status=HTTPStatus.OK)
+
 
 @require_POST
 @api(ApiArtistLinkForm)
@@ -94,6 +98,7 @@ def api_artist_link(request: HttpRequest, data: ApiArtistLinkForm) -> HttpRespon
     data["artist"].save()
 
     return HttpResponse(status=HTTPStatus.OK)
+
 
 # supports DELETE, so we can't use the @api decorator
 def api_comment(request: HttpRequest) -> HttpResponse:
@@ -126,8 +131,8 @@ def api_comment(request: HttpRequest) -> HttpResponse:
     html = render_to_string("partials/comments.html", {"comments": comments, "request": request})
     return JsonResponse({"html": html})
 
+
 def api_artist_list(_: HttpRequest) -> HttpResponse:
     """Returns a list of artists in the database."""
     artists = Artist.objects.values("name", "slug")
     return JsonResponse(list(artists), safe=False)
-

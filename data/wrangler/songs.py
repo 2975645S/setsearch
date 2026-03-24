@@ -10,11 +10,13 @@ PROGRESS_INTERVAL = 10_000
 
 logger = get_logger()
 
+
 @dataclass(slots=True)
 class CoverArtRef:
     song: str
     release: str
     release_group: str
+
 
 @dataclass
 class Song:
@@ -22,6 +24,7 @@ class Song:
     title: str
     artist: str
     picture: str | None = None
+
 
 def load_songs(path: Path, artists: set[str]) -> tuple[list[Song], list[CoverArtRef]]:
     """Load songs from the MusicBrainz dataset by the artists we care about."""

@@ -11,58 +11,36 @@
 
 {% block content %}
     <div class="container py-4">
-        <!-- artist -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="row g-0 align-items-center">
-                {% if artist.picture %}
-                    <div class="col-12 col-md-3 text-center p-3">
-                        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/{{ artist.picture }}"
-                             class="img-fluid rounded artist-image"
-                             alt="{{ artist.name }}">
-                    </div>
-                {% endif %}
 
-                <div class="col-md">
-                    <div class="card-body">
-                        <h1 class="card-title mb-1 fw-bold">
-                            {{ artist.name }}
-                            {% if artist.user %}
-                                <span class="badge bg-success ms-2">
-                                    <i class="bi bi-check-circle-fill"></i> Linked
-                                </span>
-                            {% endif %}
-                        </h1>
-                        <p class="text-muted mb-2">
-                            {{ concerts|length }} concert{{ concerts|length|pluralize }}
-                        </p>
-
-                        <a href="{% url "concert_create" %}?artist={{ artist.slug }}"
-                           class="btn btn-primary btn-sm">
-                            + Add Concert
-                        </a>
-                    </div>
+        <!-- artist header -->
+        <div class="row align-items-center mb-4">
+            {% if artist.picture %}
+                <div class="col-auto text-center">
+                    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/{{ artist.picture }}"
+                         class="img-fluid rounded artist-image"
+                         alt="{{ artist.name }}">
                 </div>
-            </div>
-            <div class="card-body">
-                <!-- link to user -->
-                {% if request.user.is_superuser %}
-                    <hr/>
-                    <h4>Admin Tools</h4>
-                    <form class="row admin-form-row">
-                        <span id="artist-id" data-id="{{ artist.id }}"></span>
-                        {% csrf_token %}
-                        {% bootstrap_form form layout="horizontal" wrapper_class="col" %}
-                        {% bootstrap_button type="reset" content="Clear" button_class="btn-danger" extra_classes="col-auto" %}
-                    </form>
-                {% endif %}
+            {% endif %}
+            <div class="col">
+                <h1 class="fw-bold mb-1">
+                    {{ artist.name }}
+                    {% if artist.user %}
+                        <span class="badge bg-success ms-2">
+                        <i class="bi bi-check-circle-fill"></i> Linked
+                    </span>
+                    {% endif %}
+                </h1>
+                <p class="text-muted mb-2">
+                    {{ concerts|length }} concert{{ concerts|length|pluralize }}
+                </p>
+                <a href="{% url "concert_create" %}?artist={{ artist.slug }}" class="btn btn-primary btn-sm me-2">
+                    + Add Concert
+                </a>
             </div>
         </div>
 
         <!-- concerts -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">Concerts</h4>
-        </div>
-
+        <h3 class="fw-semibold my-4">Concerts</h3>
         {% if concerts %}
             <div class="row g-3">
                 {% for concert in concerts %}
@@ -76,23 +54,17 @@
                                     </a>
                                     {% if concert.verified %}
                                         <span class="badge bg-success ms-2">
-                                            <i class="bi bi-check-circle-fill"></i> Verified
-                                        </span>
+                                        <i class="bi bi-check-circle-fill"></i> Verified
+                                    </span>
                                     {% endif %}
                                 </h5>
-
                                 <p class="text-muted small mb-2">
-                                    {{ concert.venue.name }}
-                                    {% if concert.venue.city %}
-                                        · {{ concert.venue.city }}
-                                    {% endif %}
+                                    {{ concert.venue.name }}{% if concert.venue.city %} ·
+                                        {{ concert.venue.city }}{% endif %}
                                 </p>
-
                                 <p class="text-muted small mb-2">
-                                    <i class="bi bi-calendar-event"></i>
-                                    {{ concert.date_str }}
+                                    <i class="bi bi-calendar-event"></i> {{ concert.date_str }}
                                 </p>
-
                                 <div class="mt-auto">
                                     <a href="{% url "concert" concert.artist.slug concert.slug %}"
                                        class="btn btn-outline-primary btn-sm">
@@ -111,6 +83,33 @@
                     Add the first concert
                 </a>
             </div>
+        {% endif %}
+
+        <!-- most played songs -->
+        <h3 class="fw-semibold my-4">Most Played Songs</h3>
+        {% if songs %}
+            <ul class="list-group list-group-flush">
+                {% for song in songs %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <span class="fw-medium">{{ song.title }}</span>
+                        <span class="badge bg-primary rounded-pill">{{ song.play_count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted mb-0">No songs played yet.</p>
+        {% endif %}
+
+
+        <!-- admin tools -->
+        {% if request.user.is_superuser %}
+            <h3 class="fw-semibold my-4">Admin Tools</h3>
+            <form class="row admin-form-row">
+                <span id="artist-id" data-id="{{ artist.id }}"></span>
+                {% csrf_token %}
+                {% bootstrap_form form layout="horizontal" wrapper_class="col" %}
+                {% bootstrap_button type="reset" content="Clear" button_class="btn-danger" extra_classes="col-auto" %}
+            </form>
         {% endif %}
     </div>
 {% endblock %}

@@ -30,7 +30,8 @@
                     {% endif %}
                 </h1>
                 <p class="text-muted mb-2">
-                    {{ concerts|length }} concert{{ concerts|length|pluralize }}
+                    {{ concerts|length }} concert{{ concerts|length|pluralize }}, {{ attendee_count }}
+                    attendee{{ attendee_count|pluralize }}
                 </p>
                 <a href="{% url "concert_create" %}?artist={{ artist.slug }}" class="btn btn-primary btn-sm me-2">
                     + Add Concert

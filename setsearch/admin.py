@@ -1,4 +1,4 @@
-from django.contrib.admin import register, display
+from django.contrib.admin import register
 from unfold.admin import ModelAdmin
 
 from setsearch.models import *
@@ -15,17 +15,6 @@ class Venue(ModelAdmin):
 @register(Concert)
 class ConcertAdmin(ModelAdmin):
     list_display = ("name", "artist", "venue", "date")
-
-    @display
-    def date(self, obj):
-        parts = [str(obj.year)]
-
-        if obj.month:
-            parts.insert(0, f"{obj.month:02}")
-        if obj.day:
-            parts.insert(0, f"{obj.day:02}")
-
-        return "-".join(parts)
 
 
 @register(Attendance)

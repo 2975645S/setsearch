@@ -3,7 +3,7 @@
 
 {% block title %}SetSearch{% endblock %}
 
-{% block head %}
+{% block style %}
     <link rel="stylesheet" type="text/css" href="{% static "css/search.css" %}"/>
 {% endblock %}
 
@@ -18,5 +18,9 @@
 {% endblock %}
 
 {% block scripts %}
-    <script type="module" src="{% static "js/home.esm.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.min.js"></script>
+{% endblock %}
+
+{% block static_scripts %}
+    <script src="{% static "js/home.js" %}"></script>
 {% endblock %}

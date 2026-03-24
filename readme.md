@@ -66,6 +66,8 @@ SetSearch uses:
 
 - [django v6.0.3](https://www.djangoproject.com/)
 - [django-bootstrap5 v26.2](https://django-bootstrap5.readthedocs.io/en/latest/)
+- [django-compressor v4.6.0](https://django-compressor.readthedocs.io/en/stable)
+- [django-htmlmin v0.11.0](https://github.com/cobrateam/django-htmlmin/tree/0.11.0)
 - [django-select2 v8.4.8](https://django-select2.readthedocs.io/en/8.4.8/)
 - [django-unfold v0.86.1](https://github.com/unfoldadmin/django-unfold)
 - [orjson v3.11.7](https://github.com/ijl/orjson)

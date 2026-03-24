@@ -1,5 +1,3 @@
-import $ from 'https://cdn.jsdelivr.net/npm/jquery@4.0.0/+esm'
-
 // attendance
 const attendButton = $("#attend-button");
 const attendanceCount = $("#attendance-count");

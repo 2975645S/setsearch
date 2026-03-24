@@ -39,5 +39,8 @@
     {{ block.super }}
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@1.0.1/jquery-sortable.min.js"></script>
+{% endblock %}
+
+{% block static_scripts %}
     <script src="{% static 'js/editConcert.js' %}"></script>
 {% endblock %}

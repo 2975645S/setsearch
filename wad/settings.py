@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_bootstrap5',
     'django_select2',
+    'htmlmin',
+    'compressor',
     'setsearch'
 ]
 
@@ -77,7 +79,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'htmlmin.middleware.HtmlMinifyMiddleware',
+    'htmlmin.middleware.MarkRequestMiddleware'
 ]
+
+HTML_MINIFY = True
 
 ROOT_URLCONF = 'wad.urls'
 
@@ -143,3 +150,11 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "static"
 STATICFILES_DIRS = [ASSETS_DIR]
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder'
+]
+
+COMPRESS_ENABLED = True

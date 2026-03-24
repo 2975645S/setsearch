@@ -11,7 +11,7 @@
         {% bootstrap_form form %}
 
         {% bootstrap_button button_type="submit" content="Submit" %}
-        <button type="button" class="btn btn-danger" id="delete-profile">Delete</button>
+        <button type="button" class="btn btn-danger mx-2" id="delete-profile">Delete</button>
     </form>
 
     <hr/>
@@ -31,7 +31,7 @@
     {% endif %}
 {% endblock %}
 
-{% block scripts %}
+{% block static_scripts %}
     {{ block.super }}
-    <script type="module" src="{% static "js/profile.esm.js" %}"></script>
+    <script src="{% static "js/profile.js" %}"></script>
 {% endblock %}

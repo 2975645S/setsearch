@@ -6,6 +6,8 @@ requires-python = "==3.13.12"
 dependencies = [
     "django==6.0.3",
     "django-bootstrap5==26.2",
+    "django-compressor==4.6.0",
+    "django-htmlmin==0.11.0",
     "django-select2==8.4.8",
     "django-unfold==0.86.1",
     "orjson==3.11.7",

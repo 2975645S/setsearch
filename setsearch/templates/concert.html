@@ -7,7 +7,7 @@
     SetSearch - {{ concert.artist.name }} @ {{ concert.venue.name }}
 {% endblock %}
 
-{% block head %}
+{% block style %}
     <link rel="stylesheet" type="text/css" href="{% static "css/concert.css" %}"/>
 {% endblock %}
 
@@ -49,6 +49,7 @@
                 <div class="d-flex align-items-center justify-content-between mt-2">
                     <!-- buttons -->
                     {% if request.user.is_authenticated %}
+                        <!-- edit -->
                         <div class="d-flex align-items-center gap-2 mt-2">
                             {% if concert.verified and not request.user.is_superuser and request.user != concert.artist.user %}
                                 <button class="btn btn-sm" disabled>Edit</button>
@@ -62,25 +63,28 @@
                                 <button class="btn btn-outline-danger btn-sm" id="delete-concert">Delete</button>
                             {% endif %}
 
-                            <!-- attendance -->
-                            <button class="btn {% if rating is None %}btn-outline-success{% else %}btn-success{% endif %} btn-sm"
-                                    id="attend-button"
-                                    data-concert="{{ concert.id }}">
-                                {% if rating is None %}
-                                    Not attended
-                                {% else %}
-                                    Attended
-                                {% endif %}
-                            </button>
+                            <!-- attend -->
+                            {% if request.user != concert.artist.user %}
+                                <button class="btn {% if rating is None %}btn-outline-success{% else %}btn-success{% endif %} btn-sm"
+                                        id="attend-button"
+                                        data-concert="{{ concert.id }}">
+                                    {% if rating is None %}
+                                        Not attended
+                                    {% else %}
+                                        Attended
+                                    {% endif %}
+                                </button>
 
-                            <div id="rating-area" {% if rating is None %}class="d-none"{% endif %}>
-                                <div id="star-rating">
-                                    {% for i in "12345" %}
-                                        <span class="bi bi-star" data-value="{{ forloop.counter }}"></span>
-                                    {% endfor %}
+                                <!-- rating -->
+                                <div id="rating-area" {% if rating is None %}class="d-none"{% endif %}>
+                                    <div id="star-rating">
+                                        {% for i in "12345" %}
+                                            <span class="bi bi-star" data-value="{{ forloop.counter }}"></span>
+                                        {% endfor %}
+                                    </div>
+                                    <input type="hidden" id="rating" value="{{ rating }}">
                                 </div>
-                                <input type="hidden" id="rating" value="{{ rating }}">
-                            </div>
+                            {% endif %}
                         </div>
                     {% endif %}
                 </div>
@@ -158,8 +162,8 @@
     </div>
 {% endblock %}
 
-{% block scripts %}
+{% block static_scripts %}
     {% if request.user.is_authenticated %}
-        <script type="module" src="{% static "js/concert.esm.js" %}"></script>
+        <script src="{% static "js/concert.js" %}"></script>
     {% endif %}
 {% endblock %}

@@ -1,5 +1,3 @@
-// jquery 3 already included in artist.html
-
 const select = $("#id_username");
 const reset = $("form > button[type=reset]");
 

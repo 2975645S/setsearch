@@ -1,5 +1,3 @@
-import $ from 'https://cdn.jsdelivr.net/npm/jquery@4.0.0/+esm'
-
 const deleteButton = $("#delete-profile");
 
 deleteButton.click(function () {

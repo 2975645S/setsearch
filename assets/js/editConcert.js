@@ -1,5 +1,3 @@
-// jquery 3 and sortablejs are already included
-
 const setlist = $("#setlist");
 
 setlist.sortable({

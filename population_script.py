@@ -11,9 +11,11 @@ from django.core.management import call_command
 from django.db.models import Model
 from zstandard import ZstdDecompressor
 
+BASE_DIR = Path(__file__).resolve().parent
+dotenv.load_dotenv(os.path.join(BASE_DIR / ".env"))
+
 BATCH_SIZE = 100_000
 GENRES_N = 100
-BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 PASSWORD = os.environ.get("PASSWORD", "password123")
 
@@ -22,7 +24,6 @@ logger = logging.getLogger()
 
 
 def setup_django():
-    dotenv.load_dotenv(os.path.join(BASE_DIR / ".env"))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wad.settings")
     django.setup()
 

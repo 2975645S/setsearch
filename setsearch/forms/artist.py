@@ -5,10 +5,11 @@ from django_select2.forms import ModelSelect2Widget
 from setsearch.models import User, Artist
 
 
-class LinkToUserForm(Form):
+class ArtistLinkForm(Form):
     username = ModelChoiceField(queryset=User.objects.all(),
                                 widget=ModelSelect2Widget(model=User, search_fields=["username__icontains"],
-                                                          attrs={"data-minimum-input-length": 0, "data-placeholder": "N/A"}),
+                                                          attrs={"data-minimum-input-length": 0,
+                                                                 "data-placeholder": "N/A"}),
                                 label="Link to User")
 
     def __init__(self, artist: Artist, *args, **kwargs):

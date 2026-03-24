@@ -2,26 +2,26 @@
 
 const select = $("#id_username");
 const reset = $("form > button[type=reset]");
-const slug = $("#artist-slug").data("slug");
-const csrfToken = $("input[name=csrfmiddlewaretoken]").val();
 
-function updateLink(username) {
+function updateLink(user) {
     $.ajax({
         method: "POST",
-        url: `/api/artist/${slug}/link`,
+        url: `/api/artist/link`,
         data: {
-            username,
-            csrfmiddlewaretoken: csrfToken
+            artist: $("#artist-id").data("id"),
+            user,
+            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
         }
     })
 }
 
-select.on("select2:select", function () {
-    const username = $(this).text();
-    updateLink(username);
+select.on("select2:select", function (e) {
+    const user = e.params.data.id;
+    updateLink(user);
 });
 
 reset.click(function () {
+    // reset select2
     select.val(null).trigger("change");
     updateLink(null);
 });

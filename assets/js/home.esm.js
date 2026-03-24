@@ -1,7 +1,7 @@
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs'
 import $ from 'https://cdn.jsdelivr.net/npm/jquery@4.0.0/+esm'
 
-const artists = await fetch("/api/artists/list").then(res => res.json());
+const artists = await fetch("/api/artists").then(res => res.json());
 const fuse = new Fuse(artists, {keys: ["name"]});
 
 const input = $("#artist-search");
@@ -24,7 +24,7 @@ input.keyup(function () {
 
     const items = matches.map(item =>
         `<li class="list-group-item list-group-item-action">
-            <a href="/artist/${item.slug}" class="text-decoration-none">${item.name}</a>
+            <a href="/artists/${item.slug}" class="text-decoration-none">${item.name}</a>
         </li>`
     ).join('');
 

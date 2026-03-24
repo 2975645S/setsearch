@@ -38,7 +38,7 @@
                             {{ concerts|length }} concert{{ concerts|length|pluralize }}
                         </p>
 
-                        <a href="{% url "create_concert" %}?artist={{ artist.slug }}"
+                        <a href="{% url "concert_create" %}?artist={{ artist.slug }}"
                            class="btn btn-primary btn-sm">
                             + Add Concert
                         </a>
@@ -51,7 +51,7 @@
                     <hr/>
                     <h4>Admin Tools</h4>
                     <form class="row admin-form-row">
-                        <span id="artist-slug" data-slug="{{ artist.slug }}"></span>
+                        <span id="artist-id" data-id="{{ artist.id }}"></span>
                         {% csrf_token %}
                         {% bootstrap_form form layout="horizontal" wrapper_class="col" %}
                         {% bootstrap_button type="reset" content="Clear" button_class="btn-danger" extra_classes="col-auto" %}
@@ -111,7 +111,7 @@
         {% else %}
             <div class="text-center text-muted py-5">
                 <p class="mb-2">No concerts listed yet.</p>
-                <a href="{% url "create_concert" %}?artist={{ artist.slug }}" class="btn btn-primary btn-sm">
+                <a href="{% url "concert_create" %}?artist={{ artist.slug }}" class="btn btn-primary btn-sm">
                     Add the first concert
                 </a>
             </div>

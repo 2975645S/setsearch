@@ -20,30 +20,53 @@ from django.urls import path, include
 from setsearch.views import *
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
     # SetSearch
     path("", home_page, name="home"),
-    path("artist/<str:artist_slug>", view_artist, name="artist"),
-    path("create", create_concert, name="create_concert"),
-    path("artist/<str:artist_slug>/<str:concert_slug>", view_concert, name="concert"),
-    path("artist/<str:artist_slug>/<str:concert_slug>/edit", edit_concert, name="edit_concert"),
     path("profile", profile, name="profile"),
     path("upcoming", upcoming_concerts, name="upcoming"),
 
-    # Auth
-    path("signup", signup_page, name="signup"),
-    path("login", login_page, name="login"),
-    path("logout", logout, name="logout"),
+    # artists
+    path("artists/<str:artist_slug>", view_artist, name="artist"),
+
+    # concerts
+    path("concerts/create", create_concert, name="concert_create"),
+    path("artists/<str:artist_slug>/concerts/<str:concert_slug>", view_concert, name="concert"),
+    path("artists/<str:artist_slug>/concerts/<str:concert_slug>/edit", edit_concert, name="concert_edit"),
+
+    # auth
+    path("auth/signup", signup_page, name="signup"),
+    path("auth/login", login_page, name="login"),
+    path("auth/logout", logout, name="logout"),
 
     # API
-    path("api/artists/list", list_artists),
-    path("api/artist/<str:artist_slug>/link", link_artist),
-    path("api/comment", comment),
-    path("api/attend/<int:concert_id>", attend),
-    path("api/rating/<int:concert_id>", rating),
-    path("api/concert/update", update_concert),
+    path("api/artists", api_artist_list),
+    path("api/artist/link", api_artist_link),
+    path("api/concerts/attend", api_concert_attend),
+    path("api/concerts/rate", api_concert_rate),
+    path("api/concerts/update", api_concert_update),
+    path("api/concerts/comment", api_comment),
 
-    # AJAX
-    path("select2/", include("django_select2.urls"))
+    # other apps
+    path('admin/', admin.site.urls),
+    path("select2/", include("django_select2.urls")),
+
+    # # SetSearch
+    # path("", home_page, name="home"),
+    # path("artist/<str:artist_slug>", view_artist, name="artist"),
+    # path("artist/<str:artist_slug>/<str:concert_slug>", view_concert, name="concert"),
+    # path("profile", profile, name="profile"),
+    # path("upcoming", upcoming_concerts, name="upcoming"),
+    #
+    # # Auth
+    # path("signup", signup_page, name="signup"),
+    # path("login", login_page, name="login"),
+    # path("logout", logout, name="logout"),
+    #
+    # # API
+    # path("api/artists/list", list_artists),
+    # path("api/artist/<str:artist_slug>/link", link_artist),
+    # path("api/comment", comment),
+    # path("api/attend/<int:concert_id>", attend),
+    # path("api/rating/<int:concert_id>", rating),
+    # path("api/concert/update", update_concert),
 ]

@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from setsearch.forms.concert import CreateConcertForm, EditConcertForm, SetlistForm
@@ -64,3 +66,13 @@ def edit_concert(request: HttpRequest, artist_slug: str, concert_slug: str) -> H
 
     return render(request, "edit_concert.html",
                   {"concert": concert, "setlist": setlist, "edit_form": edit_form, "setlist_form": setlist_form})
+
+def upcoming_concerts(request: HttpRequest) -> HttpResponse:
+    today = timezone.now().date()
+    concerts = Concert.objects.filter(
+        Q(year__gt=today.year) |
+        Q(year=today.year, month__gt=today.month) |
+        Q(year=today.year, month=today.month, day__gte=today.day)
+    ).order_by("year", "month", "day")
+
+    return render(request, "upcoming.html", {"concerts": concerts})

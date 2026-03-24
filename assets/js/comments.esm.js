@@ -6,7 +6,7 @@ const commentsList = $("#comments-list");
 const postButton = $("#post-comment");
 
 // data
-const url = "/api/comment";
+const url = "/api/concerts/comment";
 const concertId = commentsList.data("concert");
 const csrfToken = $("input[name=csrfmiddlewaretoken]").val();
 

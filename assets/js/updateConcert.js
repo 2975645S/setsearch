@@ -48,9 +48,9 @@ const csrfToken = $("input[name=csrfmiddlewaretoken]").val();
 
 updateButton.click(function () {
     let data = {
-        concert_id: $(this).data("concert"),
+        concert: $(this).data("concert"),
         name: nameInput.val(),
-        venue_id: venueInput.select2("data")[0].id,
+        venue: venueInput.select2("data")[0].id,
         date: dateInput.val(),
         setlist: JSON.stringify(setlist.children().map((i, el) => $(el).data("id")).get()),
         csrfmiddlewaretoken: csrfToken
@@ -58,7 +58,7 @@ updateButton.click(function () {
 
     $.ajax({
         method: "POST",
-        url: "/api/concert/update",
+        url: "/api/concerts/update",
         data,
         success: function () {
             window.location.href = window.location.pathname.split("/").slice(0, -1).join("/");

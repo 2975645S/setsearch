@@ -14,9 +14,10 @@ function pluralize(count, word) {
 
 attendButton.click(function () {
     $.ajax({
-        url: `/api/attend/${concertId}`,
+        url: "/api/concerts/attend",
         method: "POST",
         data: {
+            concert: concertId,
             csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
         },
         success: res => {
@@ -62,9 +63,10 @@ stars.hover(function () {
 stars.click(function () {
     const val = $(this).data("value");
     $.ajax({
-        url: `/api/rating/${concertId}`,
+        url: "/api/concerts/rate",
         method: "POST",
         data: {
+            concert: concertId,
             rating: val,
             csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
         },

@@ -56,7 +56,7 @@
                             {% if concert.verified and not request.user.is_superuser and request.user != concert.artist.user %}
                                 <button class="btn btn-sm" disabled>Edit</button>
                             {% else %}
-                                <a href="{% url "edit_concert" concert.artist.slug concert.slug %}"
+                                <a href="{% url "concert_edit" concert.artist.slug concert.slug %}"
                                    class="btn btn-outline-primary btn-sm">Edit</a>
                             {% endif %}
 

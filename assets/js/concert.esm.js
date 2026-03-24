@@ -70,7 +70,7 @@ stars.click(function () {
         data: {
             concert: concertId,
             rating: val,
-            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+            csrfmiddlewaretoken: csrfToken,
         },
         success: _ => {
             rating.val(val);

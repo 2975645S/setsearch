@@ -1,8 +1,8 @@
 {% extends "_base.html" %}
 {% load django_bootstrap5 %}
+{% load static %}
 
 {% block title %}SetSearch - Profile{% endblock %}
-
 
 {% block content %}
     <h2>Edit your profile</h2>
@@ -11,6 +11,7 @@
         {% bootstrap_form form %}
 
         {% bootstrap_button button_type="submit" content="Submit" %}
+        <button type="button" class="btn btn-danger" id="delete-profile">Delete</button>
     </form>
 
     <hr/>
@@ -28,4 +29,9 @@
     {% else %}
         <p class="text-muted">You haven't attended any concerts yet.</p>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script type="module" src="{% static "js/profile.esm.js" %}"></script>
 {% endblock %}

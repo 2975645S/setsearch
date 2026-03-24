@@ -1,0 +1,21 @@
+import $ from 'https://cdn.jsdelivr.net/npm/jquery@4.0.0/+esm'
+
+const deleteButton = $("#delete-profile");
+
+deleteButton.click(function () {
+    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        return;
+    }
+
+    console.log("a");
+
+    $.ajax({
+        url: "/profile",
+        method: "DELETE",
+        // http://bugs.jquery.com/ticket/11586
+        headers: {"X-CSRFToken": $("input[name=csrfmiddlewaretoken]").val()},
+        success: _ => {
+            window.location.href = "/";
+        }
+    })
+})

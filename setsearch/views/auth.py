@@ -55,16 +55,20 @@ def logout(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def profile(request: HttpRequest) -> HttpResponse:
-    """Page for viewing and editing the user's profile, as well as viewing attended concerts."""
-    if request.method == "POST":
-        form = ProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            # re-login the user to update the session with the new user data
-            login(request, request.user)
-            return redirect("profile")
-    else:
-        form = ProfileForm(instance=request.user)
+    """Page for viewing, editing, and deleting the user's profile, as well as viewing attended concerts."""
+    match request.method:
+        case "POST":
+            form = ProfileForm(request.POST, instance=request.user)
+            if form.is_valid():
+                form.save()
+                # re-login the user to update the session with the new user data
+                login(request, request.user)
+                return redirect("profile")
+        case "DELETE":
+            request.user.delete()
+            return redirect("home")
+        case _:
+            form = ProfileForm(instance=request.user)
 
     concerts = Concert.objects.filter().filter(attendance__user=request.user).select_related("artist",
                                                                                              "venue").order_by("-date")

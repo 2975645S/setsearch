@@ -7,8 +7,6 @@ deleteButton.click(function () {
         return;
     }
 
-    console.log("a");
-
     $.ajax({
         url: "/profile",
         method: "DELETE",

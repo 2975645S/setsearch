@@ -14,7 +14,6 @@ def view_artist(request: HttpRequest, artist_slug: str) -> HttpResponse:
     concerts = Concert.objects.filter(artist=artist).order_by("-date")
     songs = Song.objects.filter(artist=artist).annotate(play_count=Count("setlistentry")).filter(
         play_count__gt=0).order_by("-play_count")[:5]
-    print(songs)
     form = ArtistLinkForm(artist)
 
     return render(request, "artist.html", {"artist": artist, "concerts": concerts, "songs": songs, "form": form})

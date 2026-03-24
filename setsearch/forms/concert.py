@@ -13,7 +13,8 @@ class CreateConcertForm(ModelForm):
 
     def save(self, commit=True):
         concert = super().save(commit=False)
-        concert.set_date(self.cleaned_data["date"])
+        date = self.cleaned_data["date"]
+        concert.set_date(date.year, date.month, date.day)
         if commit:
             concert.save()
         return concert

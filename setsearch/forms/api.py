@@ -59,6 +59,9 @@ class ApiConcertUpdateForm(Form):
             for i, song in enumerate(ordered_songs)
         ]
 
+class ApiConcertDeleteForm(Form):
+    concert = ModelChoiceField(queryset=Concert.objects.all())
+
 class ApiArtistLinkForm(Form):
     artist = ModelChoiceField(queryset=Artist.objects.all())
     user = ModelChoiceField(queryset=User.objects.all(), required=False)

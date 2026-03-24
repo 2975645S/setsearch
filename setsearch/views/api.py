@@ -72,6 +72,16 @@ def api_concert_update(request: HttpRequest, data: ApiConcertUpdateForm) -> Http
     return HttpResponse(status=HTTPStatus.OK)
 
 @require_POST
+@api(ApiConcertDeleteForm)
+def api_concert_delete(request: HttpRequest, data: ApiConcertDeleteForm) -> HttpResponse:
+    """Deletes a concert."""
+    if not request.user.is_superuser and request.user != data["concert"].artist.user:
+        return HttpResponse(status=HTTPStatus.FORBIDDEN)
+
+    data["concert"].delete()
+    return HttpResponse(status=HTTPStatus.OK)
+
+@require_POST
 @api(ApiArtistLinkForm)
 def api_artist_link(request: HttpRequest, data: ApiArtistLinkForm) -> HttpResponse:
     """Links an artist to the user's accoun."""
@@ -84,7 +94,6 @@ def api_artist_link(request: HttpRequest, data: ApiArtistLinkForm) -> HttpRespon
     data["artist"].save()
 
     return HttpResponse(status=HTTPStatus.OK)
-
 
 # supports DELETE, so we can't use the @api decorator
 def api_comment(request: HttpRequest) -> HttpResponse:

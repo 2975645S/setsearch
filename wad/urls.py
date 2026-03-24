@@ -44,6 +44,7 @@ urlpatterns = [
     path("api/concerts/attend", api_concert_attend),
     path("api/concerts/rate", api_concert_rate),
     path("api/concerts/update", api_concert_update),
+    path("api/concerts/delete", api_concert_delete),
     path("api/concerts/comment", api_comment),
 
     # other apps

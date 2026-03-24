@@ -1,8 +1,10 @@
 import $ from 'https://cdn.jsdelivr.net/npm/jquery@4.0.0/+esm'
 
+// attendance
 const attendButton = $("#attend-button");
 const attendanceCount = $("#attendance-count");
 const concertId = attendButton.data("concert");
+const csrfToken = $("input[name=csrfmiddlewaretoken]").val();
 
 const ratingArea = $("#rating-area");
 const stars = $("#star-rating span");
@@ -18,7 +20,7 @@ attendButton.click(function () {
         method: "POST",
         data: {
             concert: concertId,
-            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+            csrfmiddlewaretoken: csrfToken,
         },
         success: res => {
             ratingArea.toggleClass("d-none");
@@ -74,4 +76,65 @@ stars.click(function () {
             rating.val(val);
         }
     });
+});
+
+// comments
+const commentBox = $("#comment-box");
+const commentsList = $("#comments-list");
+const postButton = $("#post-comment");
+
+// update comments
+function success(res) {
+    commentsList.html(res.html);
+    commentBox.val("");
+}
+
+postButton.click(function () {
+    const content = commentBox.val().trim();
+    if (content.length === 0) return;
+
+    $.ajax({
+        url: "/api/concerts/comment",
+        method: "POST",
+        data: {
+            content,
+            concert: concertId,
+            csrfmiddlewaretoken: csrfToken
+        },
+        success
+    });
+});
+
+commentsList.on("click", ".delete-comment", e => {
+    $.ajax({
+        url: "/api/concerts/comment",
+        method: "DELETE",
+        // http://bugs.jquery.com/ticket/11586
+        headers: {"X-CSRFToken": csrfToken},
+        data: JSON.stringify({
+            id: $(e.target).data("id"),
+        }),
+        success
+    });
+})
+
+// delete
+const deleteButton = $("#delete-concert");
+
+deleteButton.click(function () {
+    if (!confirm("Are you sure you want to delete this concert? This action cannot be undone.")) {
+        return;
+    }
+
+    $.ajax({
+        url: "/api/concerts/delete",
+        method: "POST",
+        data: {
+            concert: concertId,
+            csrfmiddlewaretoken: csrfToken,
+        },
+        success: _ => {
+            window.location.href = window.location.pathname.split("/").slice(0, -2).join("/");
+        }
+    })
 })

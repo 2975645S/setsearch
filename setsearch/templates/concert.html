@@ -57,6 +57,11 @@
                                    class="btn btn-outline-primary btn-sm">Edit</a>
                             {% endif %}
 
+                            <!-- delete -->
+                            {% if concert.verified and request.user == concert.artist.user or request.user.is_superuser %}
+                                <button class="btn btn-outline-danger btn-sm" id="delete-concert">Delete</button>
+                            {% endif %}
+
                             <!-- attendance -->
                             <button class="btn {% if rating is None %}btn-outline-success{% else %}btn-success{% endif %} btn-sm"
                                     id="attend-button"
@@ -115,7 +120,7 @@
                     <div class="card-body">
                         <h4 class="mb-3">Comments</h4>
 
-                        <div id="comments-list" data-concert="{{ concert.id }}">
+                        <div id="comments-list">
                             {% include "partials/comments.html" %}
                         </div>
 
@@ -155,7 +160,6 @@
 
 {% block scripts %}
     {% if request.user.is_authenticated %}
-        <script type="module" src="{% static "js/comments.esm.js" %}"></script>
-        <script type="module" src="{% static "js/attendance.esm.js" %}"></script>
+        <script type="module" src="{% static "js/concert.esm.js" %}"></script>
     {% endif %}
 {% endblock %}

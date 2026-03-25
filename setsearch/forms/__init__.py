@@ -51,7 +51,7 @@ class CreateModelField(CharField):
         # refresh choices every time
         @property
         def choices(self):
-            return [(a.id, getattr(a, self._field)) for a in self._model.objects.all()]
+            return [("", "")] + [(a.id, getattr(a, self._field)) for a in self._model.objects.all()]
 
         @choices.setter
         def choices(self, value):
@@ -78,7 +78,7 @@ class ArtistSongField(CreateModelField):
 
         @property
         def choices(self):
-            return [(s.id, s.title) for s in Song.objects.filter(artist=self._artist)]
+            return [("", "")] + [(s.id, s.title) for s in Song.objects.filter(artist=self._artist)]
 
         @choices.setter
         def choices(self, value):

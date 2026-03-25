@@ -32,6 +32,9 @@ def api_concert_attend(request: HttpRequest, data: ApiConcertAttendForm) -> Http
 @api(ApiConcertRateForm)
 def api_concert_rate(request: HttpRequest, data: ApiConcertRateForm) -> HttpResponse:
     """Updates the user's rating for a concert if they are attending it."""
+    if not Attendance.objects.filter(user=request.user, concert=data["concert"]).exists():
+        return HttpResponse(status=HTTPStatus.FORBIDDEN)
+    
     updated = Attendance.objects.filter(user=request.user, concert=data["concert"]).update(rating=data["rating"])
     if not updated:
         return HttpResponse(status=HTTPStatus.NOT_FOUND)

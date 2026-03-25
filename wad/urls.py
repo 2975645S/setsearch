@@ -39,13 +39,13 @@ urlpatterns = [
     path("auth/logout", logout, name="logout"),
 
     # API
-    path("api/artists", api_artist_list),
-    path("api/artist/link", api_artist_link),
-    path("api/concerts/attend", api_concert_attend),
-    path("api/concerts/rate", api_concert_rate),
-    path("api/concerts/update", api_concert_update),
-    path("api/concerts/delete", api_concert_delete),
-    path("api/concerts/comment", api_comment),
+    path("api/artists", api_artist_list, name="api_artist_list"),
+    path("api/artist/link", api_artist_link, name="api_artist_link"),
+    path("api/concerts/attend", api_concert_attend, name="api_concert_attend"),
+    path("api/concerts/rate", api_concert_rate, name="api_concert_rate"),
+    path("api/concerts/update", api_concert_update, name="api_concert_update"),
+    path("api/concerts/delete", api_concert_delete, name="api_concert_delete"),
+    path("api/concerts/comment", api_comment, name="api_comment"),
 
     # other apps
     path('admin/', admin.site.urls),

@@ -1,4 +1,5 @@
 from django.db.models import Model, ForeignKey, Index, CASCADE
+from django.db.models.constraints import UniqueConstraint
 from django.db.models.fields import SmallIntegerField
 
 from setsearch.models.concert import Concert
@@ -23,6 +24,9 @@ class SetlistEntry(Model):
         verbose_name = "setlist entry"
         verbose_name_plural = "setlist entries"
 
+        constraints = [
+            UniqueConstraint(fields=["concert", "position"], name="unique_concert_position")
+        ]
         indexes = [
             Index(fields=["concert", "position"]),  # get setlist for concert, ordered by position
         ]

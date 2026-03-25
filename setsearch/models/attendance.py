@@ -1,4 +1,5 @@
 from django.db.models import Model, ForeignKey, Index, CASCADE
+from django.db.models.constraints import UniqueConstraint
 from django.db.models.fields import SmallIntegerField
 
 from setsearch.models.concert import Concert
@@ -23,6 +24,9 @@ class Attendance(Model):
         verbose_name = "attendance"
         verbose_name_plural = "attendances"
 
+        constraints = [
+            UniqueConstraint(fields=["user", "concert"], name="unique_user_concert")
+        ]
         indexes = [
             Index(fields=["user", "concert"])  # has user attended concert?
         ]

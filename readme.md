@@ -44,6 +44,14 @@ python population_script.py
 python manage.py runserver
 ```
 
+## Running tests
+
+```bash
+python manage.py test setsearch.tests             # run all tests
+python manage.py test setsearch.tests.api         # run only API tests
+python manage.py test setsearch.tests.api.artists # only run API tests for artists
+```
+
 ## Acknowledgements
 
 ### Data

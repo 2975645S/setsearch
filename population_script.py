@@ -71,8 +71,10 @@ def bulk_create(objects: list[Model]):
     logger.info(f"{clazz.__name__}s created successfully.")
 
 
-def create_artists(zstd: ZstdDecompressor):
+def create_artists(zstd: ZstdDecompressor) -> dict[str, "Artist"]:
     """Create artists from the compressed dataset."""
+    artists = {}
+
     # insert individually to trigger slug generation
     for data in read_zst(zstd, "artists"):
         # create artist
@@ -83,12 +85,14 @@ def create_artists(zstd: ZstdDecompressor):
         artist.user = User.objects.create_user(username=artist.slug, email=f"{artist.slug}@setsearch.com",
                                                password=PASSWORD)
         artist.save()
+        artists[artist.mbid] = artist
+
     logger.info("Artists created successfully.")
+    return artists
 
 
-def create_songs(zstd: ZstdDecompressor):
+def create_songs(zstd: ZstdDecompressor, artists: dict[str, "Artist"]) -> dict[str, "Song"]:
     """Create songs from the compressed dataset."""
-    artists = Artist.objects.in_bulk(field_name="mbid")
     songs = []
 
     for data in read_zst(zstd, "songs"):
@@ -96,35 +100,33 @@ def create_songs(zstd: ZstdDecompressor):
         if not artist:
             continue
 
-        songs.append(
-            Song(
-                mbid=data["mbid"],
-                title=data["title"],
-                artist=artist,
-                picture=data["picture"]
-            )
-        )
+        songs.append(Song(
+            mbid=data["mbid"],
+            title=data["title"],
+            artist=artist,
+            picture=data["picture"]
+        ))
 
     bulk_create(songs)
+    return {s.mbid: s for s in Song.objects.all()}
 
 
-def create_venues(zstd: ZstdDecompressor):
+def create_venues(zstd: ZstdDecompressor) -> dict[str, "Venue"]:
     """Create venues from the compressed dataset."""
     venues = []
 
     for data in read_zst(zstd, "venues"):
-        venues.append(
-            Venue(mbid=data["mbid"], name=data["name"], city=data["city"], address=data["address"])
-        )
+        venues.append(Venue(mbid=data["mbid"], name=data["name"], city=data["city"], address=data["address"]))
 
     bulk_create(venues)
+    return {v.mbid: v for v in Venue.objects.all()}
 
 
-def create_concerts(zstd: ZstdDecompressor):
+def create_concerts(zstd: ZstdDecompressor, artists: dict[str, "Artist"], venues: dict[str, "Venue"]) -> dict[
+    str, "Concert"]:
     """Create concerts from the compressed dataset."""
-    artists = Artist.objects.in_bulk(field_name="mbid")
-    venues = Venue.objects.in_bulk(field_name="mbid")
     admin = User.objects.get(username="admin")
+    concerts = {}
 
     # insert individually to trigger slug generation
     for data in read_zst(zstd, "concerts"):
@@ -136,13 +138,15 @@ def create_concerts(zstd: ZstdDecompressor):
         concert = Concert(mbid=data["mbid"], artist=artist, name=data["name"],
                           venue=venue, modified_by=admin)
         concert.set_date(data["year"], data["month"], data["day"])
+
         concert.save()
+        concerts[concert.mbid] = concert
+
+    return concerts
 
 
-def create_entries(zstd: ZstdDecompressor):
+def create_entries(zstd: ZstdDecompressor, songs: dict[str, "Song"], concerts: dict[str, "Concert"]):
     """Create setlist entries from the compressed dataset."""
-    songs = Song.objects.in_bulk(field_name="mbid")
-    concerts = Concert.objects.in_bulk(field_name="mbid")
     entries = []
 
     for data in read_zst(zstd, "setlist"):
@@ -166,18 +170,18 @@ if __name__ == "__main__":
     migrate_db()
 
     logger.info("=== CLEAN ===")
-    clean_db([Artist, Song, Venue, Concert])
+    clean_db([User, Artist, Song, Venue, Concert])
 
     logger.info("=== CREATE ADMIN USER ===")
     create_admin()
 
     logger.info("=== POPULATE ARTISTS, SONGS, VENUES, CONCERTS, AND SETLIST ENTRIES ===")
     zstd = ZstdDecompressor()
-    create_artists(zstd)
-    create_songs(zstd)
-    create_venues(zstd)
-    create_concerts(zstd)
-    create_entries(zstd)
+    artists = create_artists(zstd)
+    songs = create_songs(zstd, artists)
+    venues = create_venues(zstd)
+    concerts = create_concerts(zstd, artists, venues)
+    create_entries(zstd, songs, concerts)
 
     logger.info("================================================")
     logger.info(f"The password for all created users is \"{PASSWORD}\".")

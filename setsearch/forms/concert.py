@@ -1,8 +1,8 @@
 from django.forms import Form, DateField, DateInput
-from django.forms.models import ModelForm, ModelChoiceField
+from django.forms.models import ModelForm
 from django_select2.forms import ModelSelect2Widget
 
-from setsearch.forms import CreateModelField
+from setsearch.forms import CreateModelField, ArtistSongField
 from setsearch.models import Concert, Artist, Venue, Song
 
 
@@ -64,5 +64,4 @@ class SetlistWidget(ModelSelect2Widget):
 class SetlistForm(Form):
     def __init__(self, artist: Artist, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["song"] = ModelChoiceField(queryset=Song.objects.filter(artist=artist),
-                                               widget=SetlistWidget(), label="Add song to setlist")
+        self.fields["song"] = ArtistSongField(artist)

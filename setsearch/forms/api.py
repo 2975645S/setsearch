@@ -26,6 +26,7 @@ class ApiConcertUpdateForm(Form):
     def clean_setlist(self):
         raw = self.cleaned_data.get("setlist", "[]")
 
+        # parse json list
         try:
             data = orjson.loads(raw)
         except orjson.JSONDecodeError:
@@ -34,29 +35,25 @@ class ApiConcertUpdateForm(Form):
         if not isinstance(data, list):
             raise ValidationError("Expected a list")
 
-        try:
-            ids = [int(x) for x in data]
-        except (TypeError, ValueError):
-            raise ValidationError("All items must be integers")
+        # parse songs
+        songs = []
+        concert = self.cleaned_data.get("concert")
 
-        songs = Song.objects.filter(id__in=ids)
-        song_map = {s.id: s for s in songs}
-
-        # validate all ids exist
-        missing = [i for i in ids if i not in song_map]
-        if missing:
-            raise ValidationError(f"Invalid song IDs: {missing}")
-
-        # preserve order
-        ordered_songs = [song_map[i] for i in ids]
+        for v in data:
+            if isinstance(v, int):
+                try:
+                    songs.append(Song.objects.get(id=v))
+                except Song.DoesNotExist:
+                    pass
+            elif isinstance(v, str):
+                song, _ = Song.objects.get_or_create(
+                    title=v,
+                    artist=concert.artist
+                )
+                songs.append(song)
 
         return [
-            SetlistEntry(
-                song=song,
-                concert=self.cleaned_data["concert"],
-                position=i
-            )
-            for i, song in enumerate(ordered_songs)
+            SetlistEntry(song=song, concert=concert, position=i) for i, song in enumerate(songs)
         ]
 
 

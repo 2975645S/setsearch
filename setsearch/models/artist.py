@@ -1,4 +1,5 @@
-from django.db.models import Model, OneToOneField, SET_NULL
+from django.db.models import Model, Q, OneToOneField, SET_NULL
+from django.db.models.constraints import UniqueConstraint
 from django.db.models.fields import CharField, SlugField
 
 from setsearch.models.user import User
@@ -15,7 +16,7 @@ class Artist(Model):
         picture: WikiMedia artist picture filename. Prepend: https://commons.wikimedia.org/wiki/Special:FilePath/
     """
 
-    mbid = CharField("MusicBrainz ID", max_length=36, unique=True, null=True, blank=True)
+    mbid = CharField("MusicBrainz ID", max_length=36, null=True, blank=True)
     name = CharField(max_length=255, db_index=True)
     slug = SlugField(blank=True)
     user = OneToOneField(User, on_delete=SET_NULL, null=True, blank=True)  # 1-1
@@ -28,3 +29,12 @@ class Artist(Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["mbid"],
+                condition=Q(mbid__isnull=False),
+                name="artist_unique_non_null_mbid",
+            )
+        ]
